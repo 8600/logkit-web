@@ -1,11 +1,8 @@
 <template>
   <div class="text-input">
     <div class="left">
-      <div class="text">
-        <span v-if="must" class="must">*</span>
-        <span>{{text}}</span>
-      </div>
-      <div class="label">{{label}}</div>
+      <span v-if="required" class="required">*</span>
+      <span class="label">{{label}}</span>
     </div>
     <div class="right">
       <input v-model="value" :placeholder="placeholder" type="text"/>
@@ -17,11 +14,10 @@
 export default {
   props: {
     value: null,
-    must: {
+    required: {
       default: false,
       type: Boolean
     },
-    text: String,
     label: {
       default: '',
       type: String

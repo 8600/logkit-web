@@ -5,26 +5,29 @@
       <span>{{label}}</span>
     </div>
     <div class="right">
-      <select :value="value" @change="updateValue">
-        <option v-for="(item, ind) in option" :value="item" :key="ind">{{item}}</option>
-      </select>
+      <CheckBox :value="value" @input="updateValue" :size="12" />
+      <span>{{text}}</span>
     </div>
   </div>
 </template>
 
 <script>
+import CheckBox from 'check-puge'
 export default {
   props: {
     value: null,
-    option: Array,
     must: {
       default: false,
       type: Boolean
     },
+    text: String,
     label: {
       default: '',
       type: String
     }
+  },
+  components: {
+    CheckBox
   },
   created () {
     if (this.value) this.$emit('input', this.value)
@@ -32,12 +35,6 @@ export default {
   methods: {
     updateValue (event) {
       const value = event.target.value
-      // 如果文本框中没有数值 则不做修改
-      if (!value) {
-        event.target.value = this.value
-        event.preventDefault()
-        return
-      }
       this.$emit('input', value)
     }
   }
