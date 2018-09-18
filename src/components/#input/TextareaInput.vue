@@ -16,7 +16,6 @@
 <style scoped>
   .textarea-input {
     display: flex;
-    margin: 20px 0;
     justify-content: center;
   }
   .left {

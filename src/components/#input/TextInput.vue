@@ -31,7 +31,6 @@ export default {
 <style scoped>
   .text-input {
     display: flex;
-    margin: 20px 0;
     justify-content: center;
   }
   .left {
