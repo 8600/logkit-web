@@ -9,7 +9,7 @@
 
 <script>
 // @ is an alias to /src
-import Loading from '@/components/Loading.vue';
+import Loading from '@/components/Loading.vue'
 
 export default {
   name: 'home',

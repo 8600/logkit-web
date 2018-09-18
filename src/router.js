@@ -1,7 +1,9 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import Home from './views/Home.vue';
-import Runner from './views/Runner.vue';
+import Vue from 'vue'
+import Router from 'vue-router'
+import Home from './views/Home.vue'
+import Runner from './views/Runner.vue'
+import DataTable from './views/DataTable.vue'
+import Collector from './views/Collector.vue'
 Vue.use(Router);
 
 export default new Router({
@@ -15,8 +17,20 @@ export default new Router({
       children: [
         {
           path: '/runner',
-          name: '收集器',
-          component: Runner
+          name: 'runner',
+          component: Runner,
+          children: [
+            {
+              path: '/',
+              name: 'dataTable',
+              component: DataTable,
+            },
+            {
+              path: '/collector',
+              name: 'collector',
+              component: Collector,
+            }
+          ]
         }
       ]
     },

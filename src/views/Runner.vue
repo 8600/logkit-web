@@ -4,8 +4,13 @@
     .label 收集器(runner)管理列表
     .runner-box
       .title-bar
-        .title-bar-button 增加日志采集收集器
-        .title-bar-button 增加系统信息采集收集器
+        router-link.title-bar-button(tag="div", to="collector")
+          .icon &#xe659;
+          span.text 增加日志采集收集器
+        .title-bar-button
+          .icon &#xe659;
+          span.text 增加系统信息采集收集器
+      router-view.runner-view
 </template>
 
 <style scoped lang="less">
@@ -30,6 +35,24 @@
   padding: 20px;
   background-color: white;
   width: calc(100% - 60px);
-  height: calc(100% - 200px);
+  height: calc(100% - 146px);
+}
+.title-bar {
+  margin: 10px 0;
+}
+.title-bar-button {
+  display: flex;
+  line-height: 28px;
+  color: #108ee9;
+  width: 170px;
+  font-size: 12px;
+  margin-right: 10px;
+  border: 1px solid #108ee9;
+  border-radius: 5px;
+  display: inline-block;
+  .icon {
+    width: 28px;
+    text-align: center;
+  }
 }
 </style>

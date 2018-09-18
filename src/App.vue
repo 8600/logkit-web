@@ -1,14 +1,35 @@
 <template lang="pug">
   .app
-    router-view
+    Loading(v-if="loading")
+    router-view(v-else)
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import Loading from '@/components/Loading.vue'
 const axios = require('axios')
 export default {
+  computed: {
+    // Getting Vuex State from store/modules/activities
+    ...mapState({
+      config: state => state.activities.config
+    })
+  },
+  components: {
+    Loading,
+  },
+  data () {
+    return {
+      loading: true
+    }
+  },
   created () {
     axios.get('config.json').then((res) => {
       const config = res.data
+      this.$store.dispatch({
+        type: 'setConfig',
+        data: config
+      })
       console.log('获取到配置信息:', res)
       axios.get(`${config.server}/logkit/version`).then((res) => {
         const version = res.data
@@ -18,6 +39,7 @@ export default {
         const cluster = res.data
         console.log('获取到集群信息:', cluster)
       })
+      this.loading = false
     })
   }
 }
@@ -50,5 +72,20 @@ export default {
   }
   a:hover {
     text-decoration: none;
+  }
+  .icon {
+    font-family: "iconfont";
+    font-style: normal;
+    font-weight: normal;
+    display: inline-block;
+    user-select: none;
+  }
+  @font-face {
+    font-family: 'iconfont';  /* project id 841808 */
+    src: url('//at.alicdn.com/t/font_841808_en6yjrw4hhh.eot');
+    src: url('//at.alicdn.com/t/font_841808_en6yjrw4hhh.eot?#iefix') format('embedded-opentype'),
+    url('//at.alicdn.com/t/font_841808_en6yjrw4hhh.woff') format('woff'),
+    url('//at.alicdn.com/t/font_841808_en6yjrw4hhh.ttf') format('truetype'),
+    url('//at.alicdn.com/t/font_841808_en6yjrw4hhh.svg#iconfont') format('svg');
   }
 </style>
