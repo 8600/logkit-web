@@ -5,7 +5,6 @@
         //- TextareaInput
         SelectInput.input-item(v-if="item.Element == 'radio'", :value="item.Default", @input="changeReader(item.KeyName, $event)", :option="item.ChooseOptions", :label="item.Description")
         TextInput.input-item(v-else-if="item.Element == ''", :value="item.Default", @input="changeReader(item.KeyName, $event)", :required="item.required", :placeholder="item.placeholder", :label="item.Description")
-      CheckInput.input-item(:value="false", label="是否自动删除日志文件", text="自动删除")
     AdvanceBar(v-model="showAdvance")
     .senior-setting(v-show="showAdvance")
       template(v-for="item in advance")

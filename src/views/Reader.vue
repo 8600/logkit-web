@@ -7,6 +7,7 @@
         SelectInput.input-item(value="fileauto", @input="changeChoiceOption($event)", :option="usages", label="选择数据源类型")
         LineBar
         OptionBox(v-if="choiceOption", v-model="configData", :option="choiceOption")
+        CheckInput.input-item(:value="autoDelete", label="是否自动删除日志文件", text="自动删除")
       .bottom-bar
         Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
         Button.button-item(text="下一步", @onClick="$router.push('parser')")
@@ -16,6 +17,7 @@
 import { mapState } from 'vuex'
 import Button from '@/components/Button_68_28.vue'
 import LineBar from '@/components/LineBar.vue'
+import CheckInput from '@/components/#input/CheckInput.vue'
 import StepsHorizontal from '@/components/StepsHorizontal.vue'
 import OptionBox from '@/components/OptionBox.vue'
 import SelectInput from '@/components/#input/SelectInput.vue'
@@ -32,11 +34,13 @@ export default {
     Button,
     LineBar,
     OptionBox,
+    CheckInput,
     SelectInput,
     StepsHorizontal
   },
   data () {
     return {
+      autoDelete: false,
       options: {},
       choiceOption: [],
       configData: {},
@@ -55,8 +59,6 @@ export default {
           newArr.push(element.key)
         })
         this.usages = newArr
-        // 默认选择第一条
-        this.configData.mode = 0
       }
     })
     axios.get(`${this.config.server}/logkit/reader/options`).then((res) => {
@@ -92,6 +94,9 @@ export default {
     margin: 20px;
     overflow-x: hidden;
     overflow-y: auto;
+  }
+  .input-item {
+    padding: 15px 0;
   }
   .label {
     color: #595959;
