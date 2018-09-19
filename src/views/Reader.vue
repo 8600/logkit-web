@@ -6,20 +6,7 @@
       .input-box
         SelectInput.input-item(value="fileauto", @input="changeChoiceOption($event)", :option="usages", label="选择数据源类型")
         LineBar
-        .usual-setting
-          template(v-for="item in choiceOption")
-            template(v-if="!item.advance")
-              //- TextareaInput
-              SelectInput.input-item(v-if="item.Element == 'radio'", :value="item.Default", @input="changeReader(item.KeyName, $event)", :option="item.ChooseOptions", :label="item.Description")
-              TextInput.input-item(v-else-if="item.Element == ''", :value="item.Default", @input="changeReader(item.KeyName, $event)", :required="item.required", :placeholder="item.placeholder", :label="item.Description")
-          CheckInput.input-item(:value="false", label="是否自动删除日志文件", text="自动删除")
-        AdvanceBar(v-model="showAdvance")
-        .senior-setting(v-show="showAdvance")
-          template(v-for="item in choiceOption")
-            template(v-if="item.advance")
-              //- TextareaInput
-              SelectInput.input-item(v-if="item.Element == 'radio'", :value="item.Default", @input="changeReader(item.KeyName, $event)", :option="item.ChooseOptions", :label="item.Description")
-              TextInput.input-item(v-else-if="item.Element == ''", :value="item.Default", @input="changeReader(item.KeyName, $event)", :required="item.required", :placeholder="item.placeholder", :label="item.Description")
+        OptionBox(v-if="choiceOption", v-model="configData", :option="choiceOption")
       .bottom-bar
         Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
         Button.button-item(text="下一步", @onClick="$router.push('parser')")
@@ -27,15 +14,11 @@
 
 <script>
 import { mapState } from 'vuex'
-import CheckBox from 'check-puge'
 import Button from '@/components/Button_68_28.vue'
 import LineBar from '@/components/LineBar.vue'
-import AdvanceBar from '@/components/AdvanceBar.vue'
 import StepsHorizontal from '@/components/StepsHorizontal.vue'
-import TextInput from '@/components/#input/TextInput.vue'
-import CheckInput from '@/components/#input/CheckInput.vue'
+import OptionBox from '@/components/OptionBox.vue'
 import SelectInput from '@/components/#input/SelectInput.vue'
-import TextareaInput from '@/components/#input/TextareaInput.vue'
 
 const axios = require('axios')
 export default {
@@ -48,26 +31,15 @@ export default {
   components: {
     Button,
     LineBar,
-    CheckBox,
-    TextInput,
-    AdvanceBar,
-    CheckInput,
+    OptionBox,
     SelectInput,
-    TextareaInput,
     StepsHorizontal
   },
   data () {
     return {
-      showAdvance: false,
-      checkDataType: '',
       options: {},
       choiceOption: [],
-      configData: {
-        reader: {
-          mode: "",
-          log_path: ""
-        }
-      },
+      configData: {},
       usages: ''
     }
   },
@@ -84,7 +56,7 @@ export default {
         })
         this.usages = newArr
         // 默认选择第一条
-        this.configData.reader.mode = 0
+        this.configData.mode = 0
       }
     })
     axios.get(`${this.config.server}/logkit/reader/options`).then((res) => {
@@ -98,14 +70,10 @@ export default {
     })
   },
   methods: {
-    changeReader (key, value) {
-      // console.log(key, value)
-      this.configData.reader[key] = value
-    },
     changeChoiceOption (value) {
-      this.configData.reader.mode = value
+      console.log('切换选项:', value)
+      this.configData.mode = value
       this.choiceOption = this.options[value]
-      console.log(value)
     }
   }
 }
@@ -133,9 +101,6 @@ export default {
     padding-top: 10px;
     height: 30px;
     line-height: 30px;
-  }
-  .input-item {
-    padding: 15px 0;
   }
   .bottom-bar {
     display: flex;
