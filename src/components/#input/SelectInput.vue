@@ -68,7 +68,9 @@ export default {
   select {
     width: 100%;
     height: 30px;
+    color: #222;
     border-color: #ccc;
     border-radius: 3px;
+    padding: 0 5px;
   }
 </style>

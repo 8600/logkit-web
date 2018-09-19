@@ -1,11 +1,11 @@
 <template>
-  <div class="select-input">
+  <div class="check-input">
     <div class="left">
       <span v-if="must" class="must">*</span>
       <span>{{label}}</span>
     </div>
     <div class="right">
-      <CheckBox :value="value" @input="updateValue" :size="12" />
+      <CheckBox class="check-box" :value="value" @input="updateValue" :size="11" />
       <span>{{text}}</span>
     </div>
   </div>
@@ -42,7 +42,7 @@ export default {
 </script>
 
 <style scoped>
-  .select-input {
+  .check-input {
     display: flex;
     justify-content: center;
   }
@@ -61,11 +61,15 @@ export default {
   .right {
     width: 400px;
     margin: 0 20px;
+    line-height: 26px;
+    display: flex;
+    color: rgba(0,0,0,.65);
+    font-size: 12px;
   }
-  select {
-    width: 100%;
-    height: 30px;
-    border-color: #ccc;
-    border-radius: 3px;
+  .right span {
+    margin: 0 10px;
+  }
+  .check-box {
+    margin: 5px 0;
   }
 </style>

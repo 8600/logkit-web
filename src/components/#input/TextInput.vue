@@ -50,10 +50,10 @@ export default {
     margin: 0 20px;
   }
   input {
-    width: calc(100% - 20px);
-    height: 30px;
+    width: calc(100% - 10px);
+    height: 28px;
     border: none;
-    padding: 0 10px;
+    padding: 0 5px;
     border: 1px solid #ccc;
     border-radius: 3px;
   }

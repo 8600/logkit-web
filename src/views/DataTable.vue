@@ -3,7 +3,7 @@
     .label 收集器(runner)管理列表
     .runner-box
       .title-bar
-        router-link.title-bar-button(tag="div", to="collector")
+        router-link.title-bar-button(tag="div", to="reader")
           .icon &#xe659;
           span.text 增加日志采集收集器
         .title-bar-button
@@ -43,8 +43,9 @@ table {
   font-size: 12px;
   font-weight: 700;
   margin: 0 15px;
-  height: 50px;
-  line-height: 50px;
+  padding-top: 10px;
+  height: 30px;
+  line-height: 30px;
 }
 .table-box {
   width: 100%;
@@ -83,10 +84,10 @@ table {
   padding: 20px;
   background-color: white;
   width: calc(100% - 60px);
-  height: calc(100% - 146px);
+  height: calc(100% - 120px);
 }
 .title-bar {
-  margin: 15px 0;
+  padding-bottom: 15px;
 }
 .title-bar-button {
   display: flex;

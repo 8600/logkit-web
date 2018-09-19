@@ -3,7 +3,8 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Runner from './views/Runner.vue'
 import DataTable from './views/DataTable.vue'
-import Collector from './views/Collector.vue'
+import Reader from './views/Reader.vue'
+import Parser from './views/Parser.vue'
 Vue.use(Router);
 
 export default new Router({
@@ -26,9 +27,14 @@ export default new Router({
               component: DataTable,
             },
             {
-              path: '/collector',
-              name: 'collector',
-              component: Collector,
+              path: '/reader',
+              name: 'reader',
+              component: Reader,
+            },
+            {
+              path: '/parser',
+              name: 'parser',
+              component: Parser,
             }
           ]
         }
