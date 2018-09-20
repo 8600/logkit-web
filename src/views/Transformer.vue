@@ -4,7 +4,7 @@
     .transformer
       StepsHorizontal
       .input-box
-        SelectInput.input-item(value="fileauto", @input="changeChoiceOption($event)", :option="usages", label="需要转化字段的类型")
+        KeyValueSelect.input-item(value="", @input="changeChoiceOption($event)", :option="usages", label="需要转化字段的类型")
         LineBar
         OptionBox(v-if="choiceOption", v-model="configData", :option="choiceOption")
       .bottom-bar
@@ -19,7 +19,7 @@ import LineBar from '@/components/LineBar.vue'
 import CheckInput from '@/components/#input/CheckInput.vue'
 import StepsHorizontal from '@/components/StepsHorizontal.vue'
 import OptionBox from '@/components/OptionBox.vue'
-import SelectInput from '@/components/#input/SelectInput.vue'
+import KeyValueSelect from '@/components/#input/KeyValueSelect.vue'
 
 const axios = require('axios')
 export default {
@@ -34,7 +34,7 @@ export default {
     LineBar,
     OptionBox,
     CheckInput,
-    SelectInput,
+    KeyValueSelect,
     StepsHorizontal
   },
   data () {
@@ -44,27 +44,23 @@ export default {
       options: {},
       choiceOption: [],
       configData: {},
-      usages: []
+      usages: [],
+      transforms: []
     }
   },
   created () {
-    console.log(this.config)
     // 获取支持的数据源类型
     axios.get(`${this.config.server}/logkit/transformer/usages`).then((res) => {
-      const value = res.data
+      let value = res.data
       console.log('获取数据源类型:', value)
       if (value.code === 'L200') {
-        let newArr = ['请选择需要转化的类型(若无,直接到下一步)']
-        let newMap = {
-          '请选择需要转化的类型(若无,直接到下一步)': ''
-        }
-        value.data.forEach(element => {
-          newArr.push(element.value),
-          // 生成 value 和 key 的对应关系
-          newMap[element.value] = element.key
+        value.data.push({
+          key: '',
+          sort_key: '',
+          value: '请选择需要转化的类型(若无,直接到下一步)'
         })
-        this.map = newMap
-        this.usages = newArr
+        this.usages = value.data
+        this.loadOptionNum++
       }
     })
     axios.get(`${this.config.server}/logkit/transformer/options`).then((res) => {
@@ -74,15 +70,15 @@ export default {
         this.options = value.data
         // 默认选择
         this.choiceOption = value.data.fileauto
+        this.loadOptionNum++
       }
     })
   },
   methods: {
     changeChoiceOption (value) {
-      console.log('切换选项:', this.map, value)
-      const key = this.map[value]
-      this.configData.type = key
-      this.choiceOption = this.options[key]
+      console.log('切换选项:', value)
+      this.choiceOption = this.options[value]
+      // this.parser.type = value
     }
   }
 }

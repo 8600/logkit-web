@@ -108,6 +108,10 @@ export default {
     },
     next () {
       console.log(this.reader)
+      this.$store.dispatch({
+        type: 'setLogConfig',
+        data: {reader: this.reader}
+      })
       this.$router.push('parser')
     }
   },
@@ -115,8 +119,7 @@ export default {
     choiceOption (newValue) {
       // console.log(newValue)
       this.reader = {
-        mode: "fileauto",
-        encoding: "UTF-8"
+        mode: "fileauto"
       }
       newValue.forEach(element => {
         if (element.Default !== '' && element.Default != undefined) {

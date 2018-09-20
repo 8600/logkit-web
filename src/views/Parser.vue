@@ -1,33 +1,36 @@
 <template lang="pug">
-  .collector-box(v-if="usages")
-    .label 收集器(runner)管理列表
-    .collector
-      StepsHorizontal
-      .input-box
-        SelectInput.input-item(value="按原始日志逐行发送", @input="changeChoiceOption($event)", :option="usages", label="选择数据源类型")
-        LineBar
-        OptionBox(v-if="choiceOption", v-model="configData", :option="choiceOption")
-        SoltInput.input-item(label="输入样例日志")
-          textarea(v-model="choiceSample")
-        SoltInput.input-item(label="样例日志")
-          textarea
-      .bottom-bar
-        Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
-        Button.button-item(text="下一步", @onClick="$router.push('transformer')")
+  .collector-box
+    Loading(v-if="loadOptionNum < 3")
+    template(v-else)
+      .label 收集器(runner)管理列表
+      .collector
+        StepsHorizontal
+        .input-box
+          KeyValueSelect.input-item(:value="parser.type", @input="changeChoiceOption($event)", :option="usages", label="选择数据源类型")
+          LineBar
+          OptionBox(v-if="choiceOption", v-model="configData", :option="choiceOption")
+          SoltInput.input-item(label="输入样例日志")
+            textarea(v-model="choiceSample")
+          SoltInput.input-item(label="样例日志")
+            textarea
+        .bottom-bar
+          Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
+          Button.button-item(text="下一步", @onClick="next()")
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import Button from '@/components/Button_68_28.vue'
 import LineBar from '@/components/LineBar.vue'
+import Loading from '@/components/Loading.vue'
 import SoltInput from '@/components/#input/SoltInput.vue'
 import StepsHorizontal from '@/components/StepsHorizontal.vue'
 import OptionBox from '@/components/OptionBox.vue'
-import SelectInput from '@/components/#input/SelectInput.vue'
+import KeyValueSelect from '@/components/#input/KeyValueSelect.vue'
 
 const axios = require('axios')
 export default {
-  name: 'reader',
+  name: 'parser',
   computed: {
     ...mapState({
       config: state => state.config
@@ -36,9 +39,10 @@ export default {
   components: {
     Button,
     LineBar,
+    Loading,
     SoltInput,
     OptionBox,
-    SelectInput,
+    KeyValueSelect,
     StepsHorizontal
   },
   data () {
@@ -48,26 +52,21 @@ export default {
       configData: {},
       samplelogs: {},
       choiceSample: '',
-      map: {},
-      usages: ''
+      usages: '',
+      loadOptionNum: 0,
+      parser: {
+        type: 'raw'
+      }
     }
   },
   created () {
-    console.log(this.config)
     // 获取支持的数据源类型
     axios.get(`${this.config.server}/logkit/parser/usages`).then((res) => {
       const value = res.data
       console.log('获取数据源类型:', value)
       if (value.code === 'L200') {
-        let newArr = []
-        let newMap = {}
-        value.data.forEach(element => {
-          newArr.push(element.value)
-          // 生成 value 和 key 的对应关系
-          newMap[element.value] = element.key
-        })
-        this.map = newMap
-        this.usages = newArr
+        this.usages = value.data
+        this.loadOptionNum++
       }
     })
     axios.get(`${this.config.server}/logkit/parser/options`).then((res) => {
@@ -77,6 +76,7 @@ export default {
         this.options = value.data
         // 默认选择
         this.choiceOption = value.data.raw
+        this.loadOptionNum++
       }
     })
     axios.get(`${this.config.server}/logkit/parser/samplelogs`).then((res) => {
@@ -86,16 +86,35 @@ export default {
         this.samplelogs = value.data
         // 默认选择 raw
         this.choiceSample = value.data.raw
+        this.loadOptionNum++
       }
     })
   },
   methods: {
     changeChoiceOption (value) {
       console.log('切换选项:', value)
-      const key = this.map[value]
-      this.configData.type = key
-      this.choiceOption = this.options[key]
-      this.choiceSample = this.samplelogs[key]
+      this.choiceOption = this.options[value]
+      this.parser.type = value
+    },
+    next () {
+      this.$store.dispatch({
+        type: 'setLogConfig',
+        data: {parser: this.parser}
+      })
+      this.$router.push('transformer')
+    }
+  },
+  watch: {
+    choiceOption (newValue) {
+      // console.log(newValue)
+      this.parser = {
+        type: "raw"
+      }
+      newValue.forEach(element => {
+        if (element.Default !== '' && element.Default != undefined) {
+          this.parser[element.KeyName] = element.Default
+        }
+      })
     }
   }
 }

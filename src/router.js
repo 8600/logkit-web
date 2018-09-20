@@ -20,7 +20,7 @@ export default new Router({
       component: Home,
       children: [
         {
-          path: '/runner',
+          path: '/',
           name: 'runner',
           component: Runner,
           children: [
