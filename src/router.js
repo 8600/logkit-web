@@ -5,6 +5,8 @@ import Runner from './views/Runner.vue'
 import DataTable from './views/DataTable.vue'
 import Reader from './views/Reader.vue'
 import Parser from './views/Parser.vue'
+import Sender from './views/Sender.vue'
+import Confirm from './views/Confirm.vue'
 import Transformer from './views/Transformer.vue'
 Vue.use(Router);
 
@@ -41,6 +43,16 @@ export default new Router({
               path: '/transformer',
               name: 'transformer',
               component: Transformer,
+            },
+            {
+              path: '/sender',
+              name: 'sender',
+              component: Sender,
+            },
+            {
+              path: '/confirm',
+              name: 'confirm',
+              component: Confirm,
             }
           ]
         }

@@ -1,6 +1,6 @@
 <template lang="pug">
   .transformer-box(v-if="usages")
-    .label 收集器(runner)管理列表
+    .label 创建日志收集器
     .transformer
       StepsHorizontal
       .input-box
@@ -9,7 +9,7 @@
         OptionBox(v-if="choiceOption", v-model="configData", :option="choiceOption")
       .bottom-bar
         Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
-        Button.button-item(text="下一步", @onClick="$router.push('parser')")
+        Button.button-item(text="下一步", @onClick="$router.push('confirm')")
 </template>
 
 <script>
@@ -50,14 +50,12 @@ export default {
   created () {
     console.log(this.config)
     // 获取支持的数据源类型
-    axios.get(`${this.config.server}/logkit/transformer/usages`).then((res) => {
+    axios.get(`${this.config.server}/logkit/sender/usages`).then((res) => {
       const value = res.data
       console.log('获取数据源类型:', value)
       if (value.code === 'L200') {
-        let newArr = ['请选择需要转化的类型(若无,直接到下一步)']
-        let newMap = {
-          '请选择需要转化的类型(若无,直接到下一步)': ''
-        }
+        let newArr = []
+        let newMap = {}
         value.data.forEach(element => {
           newArr.push(element.value),
           // 生成 value 和 key 的对应关系
@@ -67,13 +65,13 @@ export default {
         this.usages = newArr
       }
     })
-    axios.get(`${this.config.server}/logkit/transformer/options`).then((res) => {
+    axios.get(`${this.config.server}/logkit/sender/options`).then((res) => {
       const value = res.data
       console.log('获取页面数据:', value)
       if (value.code === 'L200') {
         this.options = value.data
         // 默认选择
-        this.choiceOption = value.data.fileauto
+        this.choiceOption = value.data.pandora
       }
     })
   },

@@ -1,15 +1,16 @@
 <template lang="pug">
-  .transformer-box(v-if="usages")
+  .confirm-box(v-if="usages")
     .label 创建日志收集器
-    .transformer
+    .confirm
       StepsHorizontal
       .input-box
-        SelectInput.input-item(value="fileauto", @input="changeChoiceOption($event)", :option="usages", label="需要转化字段的类型")
-        LineBar
-        OptionBox(v-if="choiceOption", v-model="configData", :option="choiceOption")
+        TextInput.input-item(:required="true", placeholder="收集器(runner)名称", label="名称")
+        TextInput.input-item(:required="true", placeholder="发送间隔单位(秒)", label="最长发送间隔")
+        TextInput.input-item(:required="true", placeholder="发送间隔单位(秒)", label="单次读取最大数据量")
+        textarea
       .bottom-bar
         Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
-        Button.button-item(text="下一步", @onClick="$router.push('sender')")
+        Button.button-item(text="下一步", @onClick="$router.push('parser')")
 </template>
 
 <script>
@@ -19,7 +20,7 @@ import LineBar from '@/components/LineBar.vue'
 import CheckInput from '@/components/#input/CheckInput.vue'
 import StepsHorizontal from '@/components/StepsHorizontal.vue'
 import OptionBox from '@/components/OptionBox.vue'
-import SelectInput from '@/components/#input/SelectInput.vue'
+import TextInput from '@/components/#input/TextInput.vue'
 
 const axios = require('axios')
 export default {
@@ -34,7 +35,7 @@ export default {
     LineBar,
     OptionBox,
     CheckInput,
-    SelectInput,
+    TextInput,
     StepsHorizontal
   },
   data () {
@@ -46,36 +47,6 @@ export default {
       configData: {},
       usages: []
     }
-  },
-  created () {
-    console.log(this.config)
-    // 获取支持的数据源类型
-    axios.get(`${this.config.server}/logkit/transformer/usages`).then((res) => {
-      const value = res.data
-      console.log('获取数据源类型:', value)
-      if (value.code === 'L200') {
-        let newArr = ['请选择需要转化的类型(若无,直接到下一步)']
-        let newMap = {
-          '请选择需要转化的类型(若无,直接到下一步)': ''
-        }
-        value.data.forEach(element => {
-          newArr.push(element.value),
-          // 生成 value 和 key 的对应关系
-          newMap[element.value] = element.key
-        })
-        this.map = newMap
-        this.usages = newArr
-      }
-    })
-    axios.get(`${this.config.server}/logkit/transformer/options`).then((res) => {
-      const value = res.data
-      console.log('获取页面数据:', value)
-      if (value.code === 'L200') {
-        this.options = value.data
-        // 默认选择
-        this.choiceOption = value.data.fileauto
-      }
-    })
   },
   methods: {
     changeChoiceOption (value) {
@@ -90,7 +61,7 @@ export default {
 
 
 <style scoped lang="less">
-  .transformer {
+  .confirm {
     margin: 10px;
     height: calc(100% - 120px);
     background-color: white;
