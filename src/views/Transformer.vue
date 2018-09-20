@@ -1,26 +1,22 @@
 <template lang="pug">
-  .collector-box(v-if="usages")
+  .transformer-box(v-if="usages")
     .label 收集器(runner)管理列表
-    .collector
+    .transformer
       StepsHorizontal
       .input-box
-        SelectInput.input-item(value="按原始日志逐行发送", @input="changeChoiceOption($event)", :option="usages", label="选择数据源类型")
+        SelectInput.input-item(value="fileauto", @input="changeChoiceOption($event)", :option="usages", label="需要转化字段的类型")
         LineBar
         OptionBox(v-if="choiceOption", v-model="configData", :option="choiceOption")
-        SoltInput.input-item(label="输入样例日志")
-          textarea(v-model="choiceSample")
-        SoltInput.input-item(label="样例日志")
-          textarea
       .bottom-bar
         Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
-        Button.button-item(text="下一步", @onClick="$router.push('transformer')")
+        Button.button-item(text="下一步", @onClick="$router.push('parser')")
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import Button from '@/components/Button_68_28.vue'
 import LineBar from '@/components/LineBar.vue'
-import SoltInput from '@/components/#input/SoltInput.vue'
+import CheckInput from '@/components/#input/CheckInput.vue'
 import StepsHorizontal from '@/components/StepsHorizontal.vue'
 import OptionBox from '@/components/OptionBox.vue'
 import SelectInput from '@/components/#input/SelectInput.vue'
@@ -36,33 +32,34 @@ export default {
   components: {
     Button,
     LineBar,
-    SoltInput,
     OptionBox,
+    CheckInput,
     SelectInput,
     StepsHorizontal
   },
   data () {
     return {
+      map: [],
+      autoDelete: false,
       options: {},
       choiceOption: [],
       configData: {},
-      samplelogs: {},
-      choiceSample: '',
-      map: {},
-      usages: ''
+      usages: []
     }
   },
   created () {
     console.log(this.config)
     // 获取支持的数据源类型
-    axios.get(`${this.config.server}/logkit/parser/usages`).then((res) => {
+    axios.get(`${this.config.server}/logkit/transformer/usages`).then((res) => {
       const value = res.data
       console.log('获取数据源类型:', value)
       if (value.code === 'L200') {
-        let newArr = []
-        let newMap = {}
+        let newArr = ['请选择需要转化的类型(若无,直接到下一步)']
+        let newMap = {
+          '请选择需要转化的类型(若无,直接到下一步)': ''
+        }
         value.data.forEach(element => {
-          newArr.push(element.value)
+          newArr.push(element.value),
           // 生成 value 和 key 的对应关系
           newMap[element.value] = element.key
         })
@@ -70,32 +67,22 @@ export default {
         this.usages = newArr
       }
     })
-    axios.get(`${this.config.server}/logkit/parser/options`).then((res) => {
+    axios.get(`${this.config.server}/logkit/transformer/options`).then((res) => {
       const value = res.data
       console.log('获取页面数据:', value)
       if (value.code === 'L200') {
         this.options = value.data
         // 默认选择
-        this.choiceOption = value.data.raw
-      }
-    })
-    axios.get(`${this.config.server}/logkit/parser/samplelogs`).then((res) => {
-      const value = res.data
-      console.log('获取样例数据', value)
-      if (value.code === 'L200') {
-        this.samplelogs = value.data
-        // 默认选择 raw
-        this.choiceSample = value.data.raw
+        this.choiceOption = value.data.fileauto
       }
     })
   },
   methods: {
     changeChoiceOption (value) {
-      console.log('切换选项:', value)
+      console.log('切换选项:', this.map, value)
       const key = this.map[value]
       this.configData.type = key
       this.choiceOption = this.options[key]
-      this.choiceSample = this.samplelogs[key]
     }
   }
 }
@@ -103,7 +90,7 @@ export default {
 
 
 <style scoped lang="less">
-  .collector {
+  .transformer {
     margin: 10px;
     height: calc(100% - 120px);
     background-color: white;

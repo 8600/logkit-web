@@ -5,6 +5,7 @@ import Runner from './views/Runner.vue'
 import DataTable from './views/DataTable.vue'
 import Reader from './views/Reader.vue'
 import Parser from './views/Parser.vue'
+import Transformer from './views/Transformer.vue'
 Vue.use(Router);
 
 export default new Router({
@@ -35,6 +36,11 @@ export default new Router({
               path: '/parser',
               name: 'parser',
               component: Parser,
+            },
+            {
+              path: '/transformer',
+              name: 'transformer',
+              component: Transformer,
             }
           ]
         }
