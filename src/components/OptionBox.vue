@@ -26,7 +26,6 @@ import SelectInput from '@/components/#input/SelectInput.vue'
 import TextareaInput from '@/components/#input/TextareaInput.vue'
 export default {
   props: {
-    value: null,
     option: Array
   },
   components: {
@@ -67,14 +66,13 @@ export default {
       this.advance = newAdvance
     },
     changeConfig (key, value) {
-      // console.log(key, value)
-      this.config[key] = value
-      console.log(this.config)
+      this.$emit("change", {key, value})
     },
     changeCleaner () {
+      const cleaner = this.cleaner
       this.$store.dispatch({
         type: 'setLogConfig',
-        data: this.cleaner
+        data: {cleaner}
       })
     }
   },

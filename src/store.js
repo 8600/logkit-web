@@ -13,13 +13,14 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    setConfig (state, payload) { // 设置当前焦点元素
+    setConfig (state, payload) {
       state.config = payload.data
       console.log('存储设置:', state.config)
     },
-    setLogConfig (state, payload) { // 设置当前焦点元素
+    setLogConfig (state, payload) {
+      console.log('设置配置:', payload.data)
       for (let key in payload.data) {
-        state.logConfig[key] = payload.data.key
+        state.logConfig[key] = payload.data[key]
       }
     } 
   },

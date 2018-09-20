@@ -26,9 +26,6 @@ export default {
       type: String
     }
   },
-  created () {
-    if (this.value) this.$emit('input', this.value)
-  },
   methods: {
     updateValue (event) {
       const value = event.target.value

@@ -6,12 +6,12 @@
       .collector
         StepsHorizontal
         .input-box
-          KeyValueSelect.input-item(value="fileauto", @input="changeChoiceOption($event)", :option="usages", label="选择数据源类型")
+          KeyValueSelect.input-item(:value="reader.mode", @input="changeChoiceOption($event)", :option="usages", label="选择数据源类型")
           LineBar
-          OptionBox(v-if="choiceOption", v-model="configData", :option="choiceOption")
+          OptionBox(v-if="choiceOption", @change="changeConfig", :option="choiceOption")
         .bottom-bar
           Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
-          Button.button-item(text="下一步", @onClick="$router.push('parser')")
+          Button.button-item(text="下一步", @onClick="next")
 </template>
 
 <script>
@@ -46,7 +46,10 @@ export default {
       choiceOption: [],
       configData: {},
       usages: [],
-      loadOptionNum: 0
+      loadOptionNum: 0,
+      reader: {
+        mode: "fileauto"
+      }
     }
   },
   created () {
@@ -89,7 +92,6 @@ export default {
         this.options = value.data
         // 默认选择
         this.choiceOption = value.data.fileauto
-        
         this.loadOptionNum++
       }
     })
@@ -97,8 +99,30 @@ export default {
   methods: {
     changeChoiceOption (value) {
       console.log('切换选项:', value)
-      this.configData.mode = value
       this.choiceOption = this.options[value]
+      this.reader.mode = value
+    },
+    changeConfig (value) {
+      console.log(value)
+      this.reader[value.key] = value.value
+    },
+    next () {
+      console.log(this.reader)
+      this.$router.push('parser')
+    }
+  },
+  watch: {
+    choiceOption (newValue) {
+      // console.log(newValue)
+      this.reader = {
+        mode: "fileauto",
+        encoding: "UTF-8"
+      }
+      newValue.forEach(element => {
+        if (element.Default !== '' && element.Default != undefined) {
+          this.reader[element.KeyName] = element.Default
+        }
+      })
     }
   }
 }
