@@ -1,26 +1,27 @@
 <template lang="pug">
-  .collector-box(v-if="usages")
-    .label 收集器(runner)管理列表
-    .collector
-      StepsHorizontal
-      .input-box
-        SelectInput.input-item(value="fileauto", @input="changeChoiceOption($event)", :option="usages", label="选择数据源类型")
-        LineBar
-        OptionBox(v-if="choiceOption", v-model="configData", :option="choiceOption")
-        CheckInput.input-item(:value="autoDelete", label="是否自动删除日志文件", text="自动删除")
-      .bottom-bar
-        Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
-        Button.button-item(text="下一步", @onClick="$router.push('parser')")
+  .collector-box
+    Loading(v-if="loadOptionNum < 2")
+    template(v-else)
+      .label 收集器(runner)管理列表
+      .collector
+        StepsHorizontal
+        .input-box
+          KeyValueSelect.input-item(value="fileauto", @input="changeChoiceOption($event)", :option="usages", label="选择数据源类型")
+          LineBar
+          OptionBox(v-if="choiceOption", v-model="configData", :option="choiceOption")
+        .bottom-bar
+          Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
+          Button.button-item(text="下一步", @onClick="$router.push('parser')")
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import Button from '@/components/Button_68_28.vue'
 import LineBar from '@/components/LineBar.vue'
-import CheckInput from '@/components/#input/CheckInput.vue'
+import Loading from '@/components/Loading.vue'
+import Button from '@/components/Button_68_28.vue'
 import StepsHorizontal from '@/components/StepsHorizontal.vue'
 import OptionBox from '@/components/OptionBox.vue'
-import SelectInput from '@/components/#input/SelectInput.vue'
+import KeyValueSelect from '@/components/#input/KeyValueSelect.vue'
 
 const axios = require('axios')
 export default {
@@ -33,9 +34,9 @@ export default {
   components: {
     Button,
     LineBar,
+    Loading,
     OptionBox,
-    CheckInput,
-    SelectInput,
+    KeyValueSelect,
     StepsHorizontal
   },
   data () {
@@ -44,30 +45,52 @@ export default {
       options: {},
       choiceOption: [],
       configData: {},
-      usages: ''
+      usages: [],
+      loadOptionNum: 0
     }
   },
   created () {
-    console.log(this.config)
     // 获取支持的数据源类型
     axios.get(`${this.config.server}/logkit/reader/usages`).then((res) => {
       const value = res.data
       console.log('获取数据源类型:', value)
       if (value.code === 'L200') {
-        let newArr = []
-        value.data.forEach(element => {
-          newArr.push(element.key)
-        })
-        this.usages = newArr
+        this.usages = value.data
+        this.loadOptionNum++
       }
     })
     axios.get(`${this.config.server}/logkit/reader/options`).then((res) => {
-      const value = res.data
+      let value = res.data
       console.log('获取页面数据:', value)
       if (value.code === 'L200') {
+        // 特殊处理
+        // 允许删除日志的项目
+        const allowDeleteOption = ['file', 'fileauto', 'dir', 'tailx']
+        for (let item in value.data) {
+          // 查找允许删除日志的项目
+          if (allowDeleteOption.includes(item)) {
+            value.data[item].push({
+              CheckRegex: "",
+              ChooseOnly: true,
+              ChooseOptions: '自动删除',
+              Default: false,
+              DefaultNoUse: true,
+              Description: "是否自动删除日志文件(delete_enable)",
+              Element: "check",
+              KeyName: "delete_enable",
+              Secret: false,
+              placeholder: null,
+              required: false,
+              style: "",
+              tooltip: ""
+            })
+          }
+        }
         this.options = value.data
         // 默认选择
         this.choiceOption = value.data.fileauto
+        
+        this.loadOptionNum++
       }
     })
   },

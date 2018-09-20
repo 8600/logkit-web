@@ -34,8 +34,7 @@ export default {
   },
   methods: {
     updateValue (event) {
-      const value = event.target.value
-      this.$emit('input', value)
+      this.$emit('input', event)
     }
   }
 }

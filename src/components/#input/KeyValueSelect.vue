@@ -1,11 +1,13 @@
 <template>
-  <div class="text-input">
+  <div class="select-input">
     <div class="left">
-      <span v-if="required" class="required">*</span>
-      <span class="label">{{label}}</span>
+      <span v-if="must" class="must">*</span>
+      <span>{{label}}</span>
     </div>
     <div class="right">
-      <input :value="value" @change="updateValue" :placeholder="placeholder" type="text"/>
+      <select :value="value" @change="updateValue">
+        <option v-for="item in option" :value="item.key" :key="item.key">{{item.value}}</option>
+      </select>
     </div>
   </div>
 </template>
@@ -14,15 +16,18 @@
 export default {
   props: {
     value: null,
-    required: {
+    option: Array,
+    must: {
       default: false,
       type: Boolean
     },
     label: {
       default: '',
       type: String
-    },
-    placeholder: String
+    }
+  },
+  created () {
+    if (this.value) this.$emit('input', this.value)
   },
   methods: {
     updateValue (event) {
@@ -39,9 +44,8 @@ export default {
 }
 </script>
 
-
 <style scoped>
-  .text-input {
+  .select-input {
     display: flex;
     justify-content: center;
   }
@@ -61,12 +65,12 @@ export default {
     width: 400px;
     margin: 0 20px;
   }
-  input {
-    width: calc(100% - 10px);
-    height: 28px;
-    border: none;
-    padding: 0 5px;
-    border: 1px solid #ccc;
+  select {
+    width: 100%;
+    height: 30px;
+    color: #222;
+    border-color: #ccc;
     border-radius: 3px;
+    padding: 0 5px;
   }
 </style>

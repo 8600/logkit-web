@@ -3,14 +3,19 @@
     .usual-setting
       template(v-for="item in normal")
         //- TextareaInput
-        SelectInput.input-item(v-if="item.Element == 'radio'", :value="item.Default", @input="changeReader(item.KeyName, $event)", :option="item.ChooseOptions", :label="item.Description")
-        TextInput.input-item(v-else-if="item.Element == ''", :value="item.Default", @input="changeReader(item.KeyName, $event)", :required="item.required", :placeholder="item.placeholder", :label="item.Description")
+        SelectInput.input-item(v-if="item.Element == 'radio'", :value="item.Default", @input="changeConfig(item.KeyName, $event)", :option="item.ChooseOptions", :label="item.Description")
+        TextInput.input-item(v-else-if="item.Element == ''", :value="item.Default", @input="changeConfig(item.KeyName, $event)", :required="item.required", :placeholder="item.placeholder", :label="item.Description")
+        CheckInput.input-item(v-else-if="item.Element == 'check'", v-model="cleaner.delete_enable", :label="item.Description", :text="item.ChooseOptions")
+    template(v-if="cleaner.delete_enable")
+      TextInput.input-item(v-model="cleaner.delete_interval", @input="changeCleaner", :required="true", placeholder="删除执行周期", label="删除执行周期")
+      TextInput.input-item(v-model="cleaner.reserve_file_number", @input="changeCleaner", :required="true", placeholder="最大保留已读文件数", label="最大保留已读文件数")
+      TextInput.input-item(v-model="cleaner.reserve_file_size", @input="changeCleaner", :required="true", placeholder="最大保留已读文件总大小", label="最大保留已读文件总大小")
     AdvanceBar(v-model="showAdvance")
     .senior-setting(v-show="showAdvance")
       template(v-for="item in advance")
         //- TextareaInput
-        SelectInput.input-item(v-if="item.Element == 'radio'", :value="item.Default", @input="changeReader(item.KeyName, $event)", :option="item.ChooseOptions", :label="item.Description")
-        TextInput.input-item(v-else-if="item.Element == ''", :value="item.Default", @input="changeReader(item.KeyName, $event)", :required="item.required", :placeholder="item.placeholder", :label="item.Description")
+        SelectInput.input-item(v-if="item.Element == 'radio'", :value="item.Default", @input="changeConfig(item.KeyName, $event)", :option="item.ChooseOptions", :label="item.Description")
+        TextInput.input-item(v-else-if="item.Element == ''", :value="item.Default", @input="changeConfig(item.KeyName, $event)", :required="item.required", :placeholder="item.placeholder", :label="item.Description")
 </template>
 
 <script>
@@ -33,6 +38,12 @@ export default {
   },
   data () {
     return {
+      cleaner: {
+        delete_enable: false,
+        delete_interval: "10",
+        reserve_file_number: "10",
+        reserve_file_size: "2048"
+      },
       showAdvance: false,
       config: {},
       normal: [],
@@ -55,9 +66,16 @@ export default {
       this.normal = newNormal
       this.advance = newAdvance
     },
-    changeReader (key, value) {
+    changeConfig (key, value) {
       // console.log(key, value)
       this.config[key] = value
+      console.log(this.config)
+    },
+    changeCleaner () {
+      this.$store.dispatch({
+        type: 'setLogConfig',
+        data: this.cleaner
+      })
     }
   },
   watch: {
