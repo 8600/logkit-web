@@ -10,12 +10,14 @@
       TextInput.input-item(v-model="cleaner.delete_interval", @input="changeCleaner", :required="true", placeholder="删除执行周期", label="删除执行周期")
       TextInput.input-item(v-model="cleaner.reserve_file_number", @input="changeCleaner", :required="true", placeholder="最大保留已读文件数", label="最大保留已读文件数")
       TextInput.input-item(v-model="cleaner.reserve_file_size", @input="changeCleaner", :required="true", placeholder="最大保留已读文件总大小", label="最大保留已读文件总大小")
-    AdvanceBar(v-model="showAdvance")
-    .senior-setting(v-show="showAdvance")
-      template(v-for="(item, index) in advance")
-        //- TextareaInput
-        SelectInput.input-item(v-if="item.Element == 'radio'", :value="item.Default", @input="changeAdvanceConfig(item.KeyName, $event, index)", :option="item.ChooseOptions", :label="item.Description")
-        TextInput.input-item(v-else-if="item.Element == ''", :value="item.Default", @input="changeAdvanceConfig(item.KeyName, $event, index)", :required="item.required", :placeholder="item.placeholder", :label="item.Description")
+    //- 只有存在高级配置项目时 显示高级配置选框才有意义
+    template(v-if="advance.length > 0")
+      AdvanceBar(v-model="showAdvance")
+      .senior-setting(v-show="showAdvance")
+        template(v-for="(item, index) in advance")
+          //- TextareaInput
+          SelectInput.input-item(v-if="item.Element == 'radio'", :value="item.Default", @input="changeAdvanceConfig(item.KeyName, $event, index)", :option="item.ChooseOptions", :label="item.Description")
+          TextInput.input-item(v-else-if="item.Element == ''", :value="item.Default", @input="changeAdvanceConfig(item.KeyName, $event, index)", :required="item.required", :placeholder="item.placeholder", :label="item.Description")
 </template>
 
 <script>
