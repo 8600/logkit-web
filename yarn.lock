@@ -1629,6 +1629,10 @@ coa@~2.0.1:
   dependencies:
     q "^1.1.2"
 
+code-highlighter@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/code-highlighter/-/code-highlighter-1.0.4.tgz#d75171c68ee97805b04d5937b222a4867d827522"
+
 code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"

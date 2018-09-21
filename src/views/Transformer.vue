@@ -4,12 +4,12 @@
     .transformer
       StepsHorizontal
       .input-box
-        KeyValueSelect.input-item(value="", @input="changeChoiceOption($event)", :option="usages", label="需要转化字段的类型")
+        KeyValueSelect.input-item(v-model="type", @input="changeChoiceOption($event)", :option="usages", label="需要转化字段的类型")
         LineBar
         OptionBox(v-if="choiceOption", v-model="configData", :option="choiceOption")
       .bottom-bar
         Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
-        Button.button-item(text="下一步", @onClick="$router.push('sender')")
+        Button.button-item(text="下一步", @onClick="next()")
 </template>
 
 <script>
@@ -39,11 +39,14 @@ export default {
   },
   data () {
     return {
+      type: '',
       map: [],
       autoDelete: false,
       options: {},
       choiceOption: [],
       configData: {},
+      // 执行下一步必须包含的key列表
+      mustKeyList: [],
       usages: [],
       transforms: []
     }
@@ -79,6 +82,21 @@ export default {
       console.log('切换选项:', value)
       this.choiceOption = this.options[value]
       // this.parser.type = value
+    },
+    next () {
+      // 检查必须项是否全部填写
+      for (let item in this.mustKeyList) {
+        const keyName = this.mustKeyList[item]
+        if (this.transforms[keyName] === undefined || this.transforms[keyName] === null || this.transforms[keyName] === '') {
+          alert('没有输入所有必须项!')
+          return
+        }
+      }
+      this.$store.dispatch({
+        type: 'setLogConfig',
+        data: {transforms: this.transforms}
+      })
+      this.$router.push('sender')
     }
   }
 }

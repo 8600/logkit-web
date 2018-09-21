@@ -9,7 +9,7 @@
         OptionBox(v-if="choiceOption", v-model="configData", :option="choiceOption")
       .bottom-bar
         Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
-        Button.button-item(text="下一步", @onClick="$router.push('confirm')")
+        Button.button-item(text="下一步", @onClick="next")
 </template>
 
 <script>
@@ -44,7 +44,8 @@ export default {
       options: {},
       choiceOption: [],
       configData: {},
-      usages: []
+      usages: [],
+      mustKeyList: []
     }
   },
   created () {
@@ -79,8 +80,21 @@ export default {
     changeChoiceOption (value) {
       console.log('切换选项:', this.map, value)
       const key = this.map[value]
+      const optionsValue = this.options[key]
       this.configData.type = key
-      this.choiceOption = this.options[key]
+      this.choiceOption = value
+      // 取出所有必须输入的Key
+      for (let item in optionsValue) {
+        if (optionsValue[item].required) {
+          this.mustKeyList.push(optionsValue[item].KeyName)
+        }
+      }
+    },
+    next () {
+      for (let item in this.mustKeyList) {
+        const keyName = this.mustKeyList[item]
+      }
+      // this.$router.push('confirm')
     }
   }
 }
