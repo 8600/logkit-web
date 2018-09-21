@@ -9,6 +9,9 @@ export default new Vuex.Store({
       server: ''
     },
     logConfig: {
+      name: 'test',
+      batch_interval: 60,
+      batch_size: '209715',
       cleaner: {}
     }
   },
