@@ -577,9 +577,9 @@
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.2.tgz#54c5a964462be3d4d78af631363c18d6fa91ac26"
 
-"@puge/highlight@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@puge/highlight/-/highlight-1.0.0.tgz#5534a58f82ddadded6361d6586ba939078d30f05"
+"@puge/highlight@1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@puge/highlight/-/highlight-1.1.1.tgz#c9a6b36f34df9cc5a6e1a8a4f540a511679bf9a9"
 
 "@types/babel-types@*", "@types/babel-types@^7.0.0":
   version "7.0.4"
@@ -1632,10 +1632,6 @@ coa@~2.0.1:
   resolved "https://registry.yarnpkg.com/coa/-/coa-2.0.1.tgz#f3f8b0b15073e35d70263fb1042cb2c023db38af"
   dependencies:
     q "^1.1.2"
-
-code-highlighter@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/code-highlighter/-/code-highlighter-1.0.4.tgz#d75171c68ee97805b04d5937b222a4867d827522"
 
 code-point-at@^1.0.0:
   version "1.1.0"
