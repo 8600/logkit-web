@@ -8,7 +8,7 @@
         .input-box
           KeyValueSelect.input-item(:value="reader.mode", @input="changeChoiceOption($event)", :option="usages", label="选择数据源类型")
           LineBar
-          OptionBox(v-if="choiceOption", @change="changeConfig", :option="choiceOption")
+          OptionBox(@change="changeConfig", :option="choiceOption")
         .bottom-bar
           Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
           Button.button-item(text="下一步", @onClick="next")
@@ -47,6 +47,8 @@ export default {
       configData: {},
       usages: [],
       loadOptionNum: 0,
+      // 执行下一步必须包含的key列表
+      mustKeyList: [],
       reader: {
         mode: "fileauto"
       }
@@ -103,11 +105,19 @@ export default {
       this.reader.mode = value
     },
     changeConfig (value) {
-      console.log(value)
+      console.log(`键值${value.key}改编为:${value.value}`)
       this.reader[value.key] = value.value
     },
     next () {
       console.log(this.reader)
+      // 检查必须项是否全部填写
+      for (let item in this.mustKeyList) {
+        const keyName = this.mustKeyList[item]
+        if (this.reader[keyName] === undefined || this.reader[keyName] === null || this.reader[keyName] === '') {
+          alert('没有输入所有必须项!')
+          return
+        }
+      }
       this.$store.dispatch({
         type: 'setLogConfig',
         data: {reader: this.reader}
@@ -118,10 +128,16 @@ export default {
   watch: {
     choiceOption (newValue) {
       // console.log(newValue)
+      // 清空必须字段列表
+      this.mustKeyList = []
       this.reader = {
         mode: "fileauto"
       }
       newValue.forEach(element => {
+        // 取出所有必须输入的Key
+        if (element.required) {
+          this.mustKeyList.push(element.KeyName)
+        }
         if (element.Default !== '' && element.Default != undefined) {
           this.reader[element.KeyName] = element.Default
         }

@@ -32,12 +32,6 @@ export default {
   methods: {
     updateValue (event) {
       const value = event.target.value
-      // 如果文本框中没有数值 则不做修改
-      if (!value) {
-        event.target.value = this.value
-        event.preventDefault()
-        return
-      }
       this.$emit('input', value)
     }
   }
