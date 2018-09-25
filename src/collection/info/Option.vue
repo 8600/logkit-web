@@ -6,12 +6,12 @@
       .metric-option
         StepsHorizontal(:step="1")
         .input-box
-          template(v-for="optionItem in usages")
+          template(v-for="metricItem in metric")
             // 如果配置项列表为空则不显示
-            template(v-if="optionItem.length > 0")
+            template(v-if="usages[metricItem.type].length > 0")
               LineBar
-              template(v-for="item in optionItem")
-                TextInput.input-item(:value="item.Default", @input="changeOption(item.KeyName, $event)", :required="item.required", :placeholder="item.placeholder", :label="item.Description")
+              template(v-for="item in usages[metricItem.type]")
+                TextInput.input-item(v-model="metricItem.attributes[item.KeyName]", :required="item.required", :placeholder="item.placeholder", :label="item.Description")
         .bottom-bar
           Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
           Button.button-item(text="下一步", @onClick="next")
@@ -32,6 +32,7 @@ export default {
   name: 'reader',
   computed: {
     ...mapState({
+      metric: state => state.metric,
       config: state => state.config
     })
   },

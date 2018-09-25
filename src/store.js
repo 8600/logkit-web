@@ -13,7 +13,8 @@ export default new Vuex.Store({
       batch_interval: 60,
       batch_size: '209715',
       cleaner: {}
-    }
+    },
+    metric: {}
   },
   mutations: {
     setConfig (state, payload) {
@@ -25,6 +26,10 @@ export default new Vuex.Store({
       for (let key in payload.data) {
         state.logConfig[key] = payload.data[key]
       }
+    },
+    setMetric (state, payload) {
+      console.log('设置配置:', payload.data)
+      state.metric = payload.data
     } 
   },
   actions: {
@@ -39,6 +44,12 @@ export default new Vuex.Store({
         type: 'setLogConfig',
         data: payload.data
       })
-    }  
+    },
+    setMetric ({commit, state}, payload) {
+      commit({
+        type: 'setMetric',
+        data: payload.data
+      })
+    }
   }
 })

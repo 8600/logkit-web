@@ -4,17 +4,17 @@
     template(v-else)
       .label 创建系统信息收集器
       .metric
-        StepsHorizontal(:step="1")
+        StepsHorizontal(:step="2")
         .input-box
-          template(v-for="(keysItem, keysName) in keys")
+          template(v-for="metricItem in metric")
             .check-all-bar
-              .text {{keysName}}
+              .text {{metricItem.type}}
               CheckBox.check(:size="11")
               span 全选/全不选
             LineBar
             .check-box
-              .check-item(v-for="key in keysItem")
-                CheckBox.check(:size="11")
+              .check-item(v-for="key in keys[metricItem.type]")
+                CheckBox.check(v-model="metricItem.attributes[key.key]", :size="11")
                 span {{key.value}}
               .clear
         .bottom-bar
@@ -28,16 +28,14 @@ import CheckBox from 'check-puge'
 import LineBar from '@/components/LineBar.vue'
 import Loading from '@/components/Loading.vue'
 import Button from '@/components/Button_68_28.vue'
-import SelectInput from '@/components/#input/SelectInput.vue'
 import StepsHorizontal from '@/components/StepsHorizontal-info.vue'
-import OptionBox from '@/components/OptionBox.vue'
-import KeyValueSelect from '@/components/#input/KeyValueSelect.vue'
 
 const axios = require('axios')
 export default {
-  name: 'reader',
+  name: 'keys',
   computed: {
     ...mapState({
+      metric: state => state.metric,
       config: state => state.config
     })
   },
@@ -46,9 +44,6 @@ export default {
     LineBar,
     Loading,
     CheckBox,
-    OptionBox,
-    SelectInput,
-    KeyValueSelect,
     StepsHorizontal
   },
   data () {
@@ -83,6 +78,9 @@ export default {
     },
     changeMetric (value) {
       console.log(value)
+    },
+    checkKeysItem (value, index) {
+      console.log(value, index)
     }
   }
 }

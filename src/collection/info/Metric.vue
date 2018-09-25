@@ -7,7 +7,7 @@
         StepsHorizontal(:step="1")
         .input-box
           template(v-for="item in usages")
-            SelectInput.input-item(:value="item.Default", @input="changeMetric(item.KeyName, $event)", :option="item.ChooseOptions", :label="item.Description")
+            SelectInput.input-item(v-model="item.Default", :option="item.ChooseOptions", :label="item.Description")
         .bottom-bar
           Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
           Button.button-item(text="下一步", @onClick="next")
@@ -25,7 +25,7 @@ import KeyValueSelect from '@/components/#input/KeyValueSelect.vue'
 
 const axios = require('axios')
 export default {
-  name: 'reader',
+  name: 'metric',
   computed: {
     ...mapState({
       config: state => state.config
@@ -42,17 +42,9 @@ export default {
   },
   data () {
     return {
-      autoDelete: false,
-      options: {},
-      choiceOption: [],
-      configData: {},
       usages: [],
       loadOptionNum: 0,
-      // 执行下一步必须包含的key列表
-      mustKeyList: [],
-      reader: {
-        mode: "fileauto"
-      }
+      metric: {}
     }
   },
   created () {
@@ -67,16 +59,24 @@ export default {
     })
   },
   methods: {
-    changeChoiceOption (value) {
-      console.log('切换选项:', value)
-      this.choiceOption = this.options[value]
-      this.reader.mode = value
-    },
     next () {
+      let metric = []
+      // 待优化 可以合并
+      for(let item in this.usages) {
+        const value = this.usages[item]
+        if (value.Default === 'true') {
+          metric.push({
+            type: value.KeyName,
+            attributes: {},
+            config: {}
+          })
+        }
+      }
+      this.$store.dispatch({
+        type: 'setMetric',
+        data: metric
+      })
       this.$router.push('keys')
-    },
-    changeMetric (value) {
-      console.log(value)
     }
   }
 }
