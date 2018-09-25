@@ -35,7 +35,7 @@ export default {
     }
   },
   created () {
-    if (this.required) this.isError = true
+    if (this.required && this.value === '') this.isError = true
   },
   methods: {
     updateValue (event) {
