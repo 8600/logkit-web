@@ -3,11 +3,14 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Runner from './views/Runner.vue'
 import DataTable from './views/DataTable.vue'
-import Reader from './views/Reader.vue'
-import Parser from './views/Parser.vue'
-import Sender from './views/Sender.vue'
-import Confirm from './views/Confirm.vue'
-import Transformer from './views/Transformer.vue'
+import Reader from './collection/log/Reader.vue'
+import Parser from './collection/log/Parser.vue'
+import Sender from './collection/Sender.vue'
+import Confirm from './collection/Confirm.vue'
+import Transformer from './collection/log/Transformer.vue'
+import Metric from './collection/info/Metric.vue'
+import Keys from './collection/info/Keys.vue'
+import Option from './collection/info/Option.vue'
 Vue.use(Router);
 
 export default new Router({
@@ -51,6 +54,21 @@ export default new Router({
               path: '/confirm',
               name: 'confirm',
               component: Confirm,
+            },
+            {
+              path: '/metric',
+              name: 'metric',
+              component: Metric,
+            },
+            {
+              path: '/keys',
+              name: 'keys',
+              component: Keys,
+            },
+            {
+              path: '/option',
+              name: 'option',
+              component: Option,
             }
           ]
         }

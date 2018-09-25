@@ -6,7 +6,7 @@
         router-link.title-bar-button(tag="div", to="reader")
           .icon &#xe659;
           span.text 增加日志采集收集器
-        .title-bar-button
+        router-link.title-bar-button(tag="div", to="metric")
           .icon &#xe659;
           span.text 增加系统信息采集收集器
       .table-box
