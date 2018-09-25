@@ -1,22 +1,31 @@
 <template lang="pug">
   .steps-label-horizontal
     .line
-    .step-one.step-item
+    .active-line(:style="{width: step * 25 + '%'}")
+    .step-one.step-item(:class="{active: step > 0}")
       .circle 1
       .text 配置数据源
-    .step-two.step-item
+    .step-two.step-item(:class="{active: step > 1}")
       .circle 2
       .text 配置解析方式
-    .step-three.step-item
+    .step-three.step-item(:class="{active: step > 2}")
       .circle 3
       .text 配置Transformer(非必填)
-    .step-four.step-item
+    .step-four.step-item(:class="{active: step > 3}")
       .circle 4
       .text 配置发送方式
-    .step-five.step-item
+    .step-five.step-item(:class="{active: step > 4}")
       .circle 5
       .text 确认并添加收集器
 </template>
+
+<script>
+export default {
+  props: {
+    step: Number
+  }
+}
+</script>
 
 <style scoped lang="less">
   .steps-label-horizontal {
@@ -34,6 +43,15 @@
     bottom: 0;
     margin: auto;
     z-index: 0;
+  }
+  .active-line {
+    position: absolute;
+    height: 1px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    z-index: 1;
+    background-color: #108ee9;
   }
   .step-item {
     display: flex;
@@ -57,6 +75,16 @@
       margin: 0 10px;
       font-weight: 700;
       font-size: 14px;
+    }
+  }
+  .active {
+    .circle {
+      color: white;
+      border-color: #108ee9;
+      background-color: #108ee9;
+    }
+    .text {
+      color: rgba(0,0,0,.65);
     }
   }
 </style>

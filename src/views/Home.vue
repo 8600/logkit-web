@@ -2,7 +2,7 @@
   .home.box
     .left-box
       .logo
-      router-link.menu-item(tag="div", to="runner") 收集器(runner)管理
+      router-link.menu-item(tag="div", to="/") 收集器(runner)管理
     router-view.right-box
     //- Loading
 </template>

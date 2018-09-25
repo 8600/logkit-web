@@ -4,7 +4,7 @@
     template(v-else)
       .label 创建日志收集器
       .transformer
-        StepsHorizontal
+        StepsHorizontal(:step="4")
         .input-box
           KeyValueSelect.input-item(v-model="type", @input="changeChoiceOption($event)", :option="usages", label="需要转化字段的类型")
           LineBar

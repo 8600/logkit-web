@@ -2,7 +2,7 @@
   .confirm-box(v-if="usages")
     .label 创建日志收集器
     .confirm
-      StepsHorizontal
+      StepsHorizontal(:step="5")
       .input-box
         TextInput.input-item(v-model="logConfig.name", :required="true", placeholder="收集器(runner)名称", label="名称")
         TextInput.input-item(v-model="logConfig.batch_interval", :required="true", placeholder="发送间隔单位(秒)", label="最长发送间隔")

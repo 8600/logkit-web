@@ -4,7 +4,7 @@
     template(v-else)
       .label 收集器(runner)管理列表
       .collector
-        StepsHorizontal
+        StepsHorizontal(:step="2")
         .input-box
           KeyValueSelect.input-item(:value="parser.type", @input="changeChoiceOption($event)", :option="usages", label="选择数据源类型")
           LineBar
