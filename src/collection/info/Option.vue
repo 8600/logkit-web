@@ -4,14 +4,15 @@
     template(v-else)
       .label 创建系统信息收集器
       .metric-option
-        StepsHorizontal(:step="1")
+        StepsHorizontal(:step="3")
         .input-box
           template(v-for="metricItem in metric")
             // 如果配置项列表为空则不显示
             template(v-if="usages[metricItem.type].length > 0")
               LineBar
               template(v-for="item in usages[metricItem.type]")
-                TextInput.input-item(v-model="metricItem.attributes[item.KeyName]", :required="item.required", :placeholder="item.placeholder", :label="item.Description")
+                SelectInput.input-item(v-if="item.Element == 'radio'", v-model="item.Default", :option="item.ChooseOptions", :label="item.Description")
+                TextInput.input-item(v-else, v-model="item.Default", :required="item.required", :placeholder="item.placeholder", :label="item.Description")
         .bottom-bar
           Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
           Button.button-item(text="下一步", @onClick="next")
@@ -23,6 +24,7 @@ import LineBar from '@/components/LineBar.vue'
 import Loading from '@/components/Loading.vue'
 import Button from '@/components/Button_68_28.vue'
 import TextInput from '@/components/#input/TextInput.vue'
+import SelectInput from '@/components/#input/SelectInput.vue'
 import StepsHorizontal from '@/components/StepsHorizontal-info.vue'
 import OptionBox from '@/components/OptionBox.vue'
 import KeyValueSelect from '@/components/#input/KeyValueSelect.vue'
@@ -42,6 +44,7 @@ export default {
     Loading,
     OptionBox,
     TextInput,
+    SelectInput,
     KeyValueSelect,
     StepsHorizontal
   },
@@ -78,6 +81,20 @@ export default {
       this.reader.mode = value
     },
     next () {
+      let metricCopy = JSON.parse(JSON.stringify(this.metric))
+      for (let index in metricCopy) {
+        // 找到usages中对应的数据列表
+        const data = this.usages[metricCopy[index].type]
+        // metricCopy[index].config[]
+        data.forEach(element => {
+          if (element.Default !== '') metricCopy[index].config[element.KeyName] = element.Default
+        })
+      }
+      console.log(metricCopy)
+      this.$store.dispatch({
+        type: 'setLogConfig',
+        data: {metric: metricCopy}
+      })
       this.$router.push('sender')
     },
     changeOption (value) {
