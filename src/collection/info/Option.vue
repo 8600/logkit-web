@@ -75,11 +75,6 @@ export default {
     })
   },
   methods: {
-    changeChoiceOption (value) {
-      console.log('切换选项:', value)
-      this.choiceOption = this.options[value]
-      this.reader.mode = value
-    },
     next () {
       let metricCopy = JSON.parse(JSON.stringify(this.metric))
       for (let index in metricCopy) {
@@ -97,9 +92,6 @@ export default {
         data: {metric: metricCopy}
       })
       this.$router.push('sender')
-    },
-    changeOption (value) {
-      console.log(value)
     }
   }
 }

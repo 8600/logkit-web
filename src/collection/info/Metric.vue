@@ -6,11 +6,10 @@
       .metric
         StepsHorizontal(:step="1")
         .input-box
-          template(v-for="(item, key) in usages")
-            .check-card(@click="cardClick(key)", :class="{active: item.Default === 'true'}")
-              .icon(v-if="item.Default === 'true'") &#xe609;
-              .icon(v-else) &#xe600;
-              .text {{item.Description}}
+          .check-card(v-for="(item, key) in usages", @click="cardClick(key)", :class="{active: item.Default === 'true'}")
+            .icon(v-if="item.Default === 'true'") &#xe609;
+            .icon(v-else) &#xe600;
+            .text {{item.Description}}
           .clear
         .bottom-bar
           Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
@@ -53,14 +52,13 @@ export default {
     }
   },
   created () {
-    // 如果metricData有数据 那么是修改模式 不需要请求数据
-    // if (this.metricData.length > 0) return
     // 获取支持的数据源类型
     axios.get(`${this.config.server}/logkit/metric/usages`).then((res) => {
       const value = res.data
       console.log('获取数据源类型:', value)
       // 待优化 后端返回更方便
       if (value.code === 'L200') {
+        // 如果metricData有数据 那么是修改模式
         if (this.metricData.length > 0) {
           // 循环每一条内容
           for (let key in value.data) {
@@ -89,6 +87,7 @@ export default {
           })
         }
       }
+      // 这里会覆盖保存的配置
       this.$store.dispatch({
         type: 'setMetric',
         data: metric
