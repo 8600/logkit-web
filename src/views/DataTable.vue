@@ -34,10 +34,12 @@
             tbody
               tr(v-for="(item, key) in tableData", :key="key")
                 th {{item.name}}
-                th {{item.createtime}}
+                //- 创建时间
+                th {{new Date(item.createtime).toLocaleString()}}
                 th {{status[item.name].runningStatus === 'running' ? '运行中' : '已停止'}}
                 th {{status[item.name].readDataCount}}
-                th {{status[item.name].readspeed}}
+                //- 读取条数
+                th {{parseInt(status[item.name].readspeed)}}
                 th {{status[item.name].readspeed_kb}}
                 th {{status[item.name].parserStats.success}} / {{status[item.name].parserStats.success + status[item.name].parserStats.errors}}
                 th 

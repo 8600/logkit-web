@@ -2,6 +2,7 @@
   .home.box
     .left-box
       .logo
+        img(src="../assets/logo.png")
       router-link.menu-item(tag="div", to="/") 收集器(runner)管理
     router-view.right-box
     //- Loading
@@ -44,5 +45,14 @@ export default {
 }
 .logo {
   height: 65px;
+  position: relative;
+  img {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    position: absolute;
+  }
 }
 </style>

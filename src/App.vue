@@ -80,12 +80,15 @@ export default {
     display: inline-block;
     user-select: none;
   }
+  .clear {
+    clear: both;
+  }
   @font-face {
     font-family: 'iconfont';  /* project id 841808 */
-    src: url('//at.alicdn.com/t/font_841808_7b1jtdcav5h.eot');
-    src: url('//at.alicdn.com/t/font_841808_7b1jtdcav5h.eot?#iefix') format('embedded-opentype'),
-    url('//at.alicdn.com/t/font_841808_7b1jtdcav5h.woff') format('woff'),
-    url('//at.alicdn.com/t/font_841808_7b1jtdcav5h.ttf') format('truetype'),
-    url('//at.alicdn.com/t/font_841808_7b1jtdcav5h.svg#iconfont') format('svg');
+    src: url('//at.alicdn.com/t/font_841808_pnx3l62ffb.eot');
+    src: url('//at.alicdn.com/t/font_841808_pnx3l62ffb.eot?#iefix') format('embedded-opentype'),
+    url('//at.alicdn.com/t/font_841808_pnx3l62ffb.woff') format('woff'),
+    url('//at.alicdn.com/t/font_841808_pnx3l62ffb.ttf') format('truetype'),
+    url('//at.alicdn.com/t/font_841808_pnx3l62ffb.svg#iconfont') format('svg');
   }
 </style>

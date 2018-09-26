@@ -6,8 +6,12 @@
       .metric
         StepsHorizontal(:step="1")
         .input-box
-          template(v-for="item in usages")
-            SelectInput.input-item(v-model="item.Default", :option="item.ChooseOptions", :label="item.Description")
+          template(v-for="(item, key) in usages")
+            .check-card(@click="cardClick(key)", :class="{active: item.Default === 'true'}")
+              .icon(v-if="item.Default === 'true'") &#xe609;
+              .icon(v-else) &#xe600;
+              .text {{item.Description}}
+          .clear
         .bottom-bar
           Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
           Button.button-item(text="下一步", @onClick="next")
@@ -28,6 +32,7 @@ export default {
   name: 'metric',
   computed: {
     ...mapState({
+      metricData: state => state.metric,
       config: state => state.config
     })
   },
@@ -48,11 +53,23 @@ export default {
     }
   },
   created () {
+    // 如果metricData有数据 那么是修改模式 不需要请求数据
+    // if (this.metricData.length > 0) return
     // 获取支持的数据源类型
     axios.get(`${this.config.server}/logkit/metric/usages`).then((res) => {
       const value = res.data
       console.log('获取数据源类型:', value)
+      // 待优化 后端返回更方便
       if (value.code === 'L200') {
+        if (this.metricData.length > 0) {
+          // 循环每一条内容
+          for (let key in value.data) {
+            // 将储存中找不到的项目的值设置为false
+            if (!this.metricData.find((element) => (element.type == value.data[key].KeyName))) {
+              value.data[key].Default = 'false'
+            }
+          }
+        }
         this.usages = value.data
         this.loadOptionNum++
       }
@@ -77,6 +94,11 @@ export default {
         data: metric
       })
       this.$router.push('keys')
+    },
+    cardClick (key) {
+      // 这后端我也是醉了 返回的是个字符串不是一个布尔 还需要特殊处理
+      if ( this.usages[key].Default === 'false')  this.usages[key].Default = 'true'
+      else this.usages[key].Default = 'false'
     }
   }
 }
@@ -114,5 +136,32 @@ export default {
     .button-item {
       margin: 0 10px;
     }
+  }
+  .check-card {
+    cursor: pointer;
+    position: relative;
+    background-color: #756d6d;
+    display: flex;
+    height: 60px;
+    width: 280px;
+    float: left;
+    margin: 10px;
+    color: white;
+    line-height: 60px;
+    box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.35);
+    .icon {
+      width: 60px;
+      text-align: center;
+      font-size: 1.6rem;
+    }
+    .text {
+      margin: 0 10px;
+    }
+  }
+  .active {
+    background-color: cornflowerblue;
+  }
+  .check-card:hover {
+    transform: scale(1.05);
   }
 </style>

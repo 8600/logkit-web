@@ -1,7 +1,7 @@
 <template lang="pug">
   .steps-label-horizontal
     .line
-    .active-line(:style="{width: step * 25 + '%'}")
+    .active-line(:style="{width: (step - 1) * 25 + '%'}")
     .step-one.step-item(:class="{active: step > 0}")
       .circle 1
       .text 配置数据源

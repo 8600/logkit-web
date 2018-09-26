@@ -1,6 +1,6 @@
 <template lang="pug">
   .runner
-    .title 七牛Logkit监控中心v1.5.4
+    .title 我的Logkit监控中心v1.5.4
     router-view.runner-view
 </template>
 
