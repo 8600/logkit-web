@@ -1,38 +1,136 @@
 <template lang="pug">
   .data-table
-    .label 收集器(runner)管理列表
-    .runner-box
-      .title-bar
-        router-link.title-bar-button(tag="div", to="reader")
-          .icon &#xe659;
-          span.text 增加日志采集收集器
-        router-link.title-bar-button(tag="div", to="metric")
-          .icon &#xe659;
-          span.text 增加系统信息采集收集器
-      .table-box
-        table(border="0", cellspacing="0", cellpadding="0")
-          thead
-            tr
-              th 名称
-              th 修改时间
-              th 运行状态
-              th 读取总条数
-              th 读取条数(条/秒)
-              th 发送速率(条/s)
-              th 解析成功/总 (条数)
-              th 发送成功/总 (条数)
-              th 路径
-              th 待读取数据
-              th 错误日志
-              th 详细配置
-              th 编辑
-              th 操作
-              th 重置
-              th 删除
-        .empty
-          .icon &#xe64b;
-          span 暂无数据
+    Loading(v-if="loadOptionNum < 2")
+    template(v-else)
+      .label 收集器(runner)管理列表
+      .runner-box
+        .title-bar
+          router-link.title-bar-button(tag="div", to="reader")
+            .icon &#xe659;
+            span.text 增加日志采集收集器
+          router-link.title-bar-button(tag="div", to="metric")
+            .icon &#xe659;
+            span.text 增加系统信息采集收集器
+        .table-box
+          table(v-if="tableData", border="0", cellspacing="0", cellpadding="0")
+            thead
+              tr
+                th 名称
+                th 修改时间
+                th 运行状态
+                th 读取总条数
+                th 读取条数(条/秒)
+                th 发送速率(条/s)
+                th 解析成功/总 (条数)
+                th 发送成功/总 (条数)
+                th 路径
+                th 待读取数据
+                th 错误日志
+                th 详细配置
+                th 编辑
+                th 操作
+                th 重置
+                th 删除
+            tbody
+              tr(v-for="(item, key) in tableData", :key="key")
+                th {{item.name}}
+                th {{item.createtime}}
+                th {{status[item.name].runningStatus === 'running' ? '运行中' : '已停止'}}
+                th {{status[item.name].readDataCount}}
+                th {{status[item.name].readspeed}}
+                th {{status[item.name].readspeed_kb}}
+                th {{status[item.name].parserStats.success}} / {{status[item.name].parserStats.success + status[item.name].parserStats.errors}}
+                th 
+                th 
+                th
+                th
+                  .icon &#xe699;
+                //- 详细配置
+                th
+                  .icon(@click="showConfig = item") &#xe699;
+                th
+                  .icon &#xe67b;
+                //- 操作
+                th
+                  // 关闭按钮
+                  .icon(v-if="status[item.name].runningStatus === 'running'", @click="stop(item.name)") &#xe7fc;
+                  .icon(v-else, @click="start(item.name)") &#xe686;
+                th
+                  // 重置
+                  .icon(@click="reset(item.name)") &#xe629;
+                th
+                  // 删除
+                  .icon(@click="delete(item.name)") &#xe61c;
+          .empty(v-else)
+            .icon &#xe64b;
+            span 暂无数据
+        .show-config-box(v-if="showConfig !== null")
+          .show-config
+            .title
+              .text 详细配置情况
+              .close.icon(@click="showConfig = null") &#xe635;
+            .high-lighter
+              Highlighter(v-model="showConfig")
 </template>
+
+<script>
+import { mapState } from 'vuex'
+import Highlighter from '@puge/highlight'
+import Loading from '@/components/Loading.vue'
+const axios = require('axios')
+export default {
+  name: 'table',
+  computed: {
+    ...mapState({
+      config: state => state.config
+    })
+  },
+  components: {
+    Loading,
+    Highlighter
+  },
+  data () {
+    return {
+      loadOptionNum: 0,
+      tableData: [],
+      status: {},
+      showConfig: null
+    }
+  },
+  created () {
+    axios.get(`${this.config.server}/logkit/configs`).then((res) => {
+      const value = res.data
+      console.log('获取配置信息:', value)
+      if (value.code === 'L200') {
+        this.tableData = value.data
+        this.loadOptionNum++
+      }
+    })
+    axios.get(`${this.config.server}/logkit/status`).then((res) => {
+      const value = res.data
+      console.log('获取状态信息:', value)
+      if (value.code === 'L200') {
+        this.status = value.data
+        this.loadOptionNum++
+      }
+    })
+  },
+  methods: {
+    stop (name) {
+      axios.post(`${this.config.server}/logkit/configs/${name}/stop`)
+    },
+    start (name) {
+      axios.post(`${this.config.server}/logkit/configs/${name}/start`)
+    },
+    reset (name) {
+      axios.post(`${this.config.server}/logkit/configs/${name}/reset`)
+    },
+    delete (name) {
+      axios.post(`${this.config.server}/logkit/configs/${name}`)
+    }
+  }
+}
+</script>
 
 <style scoped lang="less">
 table {
@@ -79,6 +177,21 @@ table {
     }
   }
 }
+tbody {
+  th {
+    border-bottom: 1px solid #e9e9e9;
+    .icon {
+      color: blue;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+  }
+  tr {
+    height: 40px;
+    line-height: 40px;
+    color: rgba(0,0,0,.65);
+  }
+}
 .runner-box {
   margin: 10px;
   padding: 20px;
@@ -103,6 +216,41 @@ table {
   .icon {
     width: 28px;
     text-align: center;
+  }
+}
+.show-config-box {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  .show-config {
+    width: 80%;
+    height: 80%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    background-color: white;
+  }
+  .title {
+    line-height: 40px;
+    display: flex;
+    padding: 0 10px;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+    .icon {
+      width: 20px;
+      cursor: pointer;
+      text-align: center;
+    }
+  }
+  .high-lighter {
+    overflow: auto;
+    height: calc(100% - 40px);
   }
 }
 </style>

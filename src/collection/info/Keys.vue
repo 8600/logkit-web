@@ -6,10 +6,10 @@
       .metric
         StepsHorizontal(:step="2")
         .input-box
-          template(v-for="metricItem in metric")
+          template(v-for="(metricItem, metricIndex) in metric")
             .check-all-bar
               .text {{metricItem.type}}
-              CheckBox.check(:size="11")
+              CheckBox.check(v-model="checkList[metricItem.type]", @input="checkAll(metricItem.type, $event, metricIndex)", :size="11")
               span 全选/全不选
             LineBar
             .check-box
@@ -48,17 +48,9 @@ export default {
   },
   data () {
     return {
-      autoDelete: false,
-      options: {},
-      choiceOption: [],
-      configData: {},
       keys: [],
-      loadOptionNum: 0,
-      // 执行下一步必须包含的key列表
-      mustKeyList: [],
-      reader: {
-        mode: "fileauto"
-      }
+      checkList: [],
+      loadOptionNum: 0
     }
   },
   created () {
@@ -76,11 +68,20 @@ export default {
     next () {
       this.$router.push('option')
     },
-    changeMetric (value) {
-      console.log(value)
-    },
-    checkKeysItem (value, index) {
-      console.log(value, index)
+    checkAll (name, bool, metricIndex) {
+      const metricCopy = JSON.parse(JSON.stringify(this.metric))
+      // 当前选中项目所能选择的字段列表
+      const keyList = this.keys[name]
+      for (let item in keyList) {
+        // 取出每条的key
+        const key = keyList[item].key
+        // 执行全选 / 全部取消操作
+        metricCopy[metricIndex].attributes[key] = bool
+      }
+      this.$store.dispatch({
+        type: 'setMetric',
+        data: metricCopy
+      })
     }
   }
 }
@@ -99,9 +100,6 @@ export default {
     margin: 20px;
     overflow-x: hidden;
     overflow-y: auto;
-  }
-  .input-item {
-    padding: 15px 0;
   }
   .label {
     color: #595959;

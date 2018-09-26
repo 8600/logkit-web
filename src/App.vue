@@ -82,10 +82,10 @@ export default {
   }
   @font-face {
     font-family: 'iconfont';  /* project id 841808 */
-    src: url('//at.alicdn.com/t/font_841808_en6yjrw4hhh.eot');
-    src: url('//at.alicdn.com/t/font_841808_en6yjrw4hhh.eot?#iefix') format('embedded-opentype'),
-    url('//at.alicdn.com/t/font_841808_en6yjrw4hhh.woff') format('woff'),
-    url('//at.alicdn.com/t/font_841808_en6yjrw4hhh.ttf') format('truetype'),
-    url('//at.alicdn.com/t/font_841808_en6yjrw4hhh.svg#iconfont') format('svg');
+    src: url('//at.alicdn.com/t/font_841808_7b1jtdcav5h.eot');
+    src: url('//at.alicdn.com/t/font_841808_7b1jtdcav5h.eot?#iefix') format('embedded-opentype'),
+    url('//at.alicdn.com/t/font_841808_7b1jtdcav5h.woff') format('woff'),
+    url('//at.alicdn.com/t/font_841808_7b1jtdcav5h.ttf') format('truetype'),
+    url('//at.alicdn.com/t/font_841808_7b1jtdcav5h.svg#iconfont') format('svg');
   }
 </style>
