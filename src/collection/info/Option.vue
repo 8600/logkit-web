@@ -87,7 +87,8 @@ export default {
         const data = this.usages[metricCopy[index].type]
         // metricCopy[index].config[]
         data.forEach(element => {
-          if (element.Default !== '') metricCopy[index].config[element.KeyName] = element.Default
+          // 待优化 后端返回的有问题 
+          if (element.Default !== '') metricCopy[index].config[element.KeyName] = element.Default === 'true' ? true : false
         })
       }
       console.log(metricCopy)

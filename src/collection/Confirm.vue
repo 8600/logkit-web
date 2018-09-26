@@ -6,12 +6,13 @@
       .input-box
         TextInput.input-item(v-model="logConfig.name", :required="true", placeholder="收集器(runner)名称", label="名称")
         TextInput.input-item(v-model="logConfig.batch_interval", :required="true", placeholder="发送间隔单位(秒)", label="最长发送间隔")
+        TextInput.input-item(v-model="logConfig.collect_interval", :required="true", placeholder="系统信息收集间隔(秒)", label="系统信息收集间隔")
         TextInput.input-item(v-model="logConfig.batch_size", :required="true", placeholder="发送间隔单位(秒)", label="单次读取最大数据量")
         CheckInput.input-item(v-model="logConfig.extra_info", label="添加额外系统信息", text="启用")
         Highlighter.high-lighter(v-model="logConfig")
       .bottom-bar
         Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
-        Button.button-item(text="下一步", @onClick="$router.push('parser')")
+        Button.button-item(text="提交", @onClick="sendData")
 </template>
 
 <script>
@@ -29,6 +30,7 @@ export default {
   name: 'confirm',
   computed: {
     ...mapState({
+      config: state => state.config,
       logConfig: state => state.logConfig
     })
   },
@@ -57,6 +59,16 @@ export default {
       const key = this.map[value]
       this.configData.type = key
       this.choiceOption = this.options[key]
+    },
+    sendData () {
+      const logConfig = this.logConfig
+      axios.post(`${this.config.server}/logkit/configs/${logConfig.name}`, logConfig).then((res) => {
+        const value = res.data
+        if (value.code === 'L200') {
+          alert('添加成功!')
+          this.$router.push('/')
+        }
+      })
     }
   }
 }

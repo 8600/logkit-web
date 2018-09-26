@@ -11,8 +11,9 @@ export default new Vuex.Store({
     logConfig: {
       name: 'test',
       batch_interval: 60,
-      batch_size: '209715',
-      cleaner: {}
+      batch_size: 2097152,
+      collect_interval: 3,
+      extra_info: false
     },
     metric: []
   },

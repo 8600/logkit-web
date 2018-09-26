@@ -60,7 +60,7 @@
                   .icon(@click="reset(item.name)") &#xe629;
                 th
                   // 删除
-                  .icon(@click="delete(item.name)") &#xe61c;
+                  .icon(@click="deleteRunner(item.name)") &#xe61c;
           .empty(v-else)
             .icon &#xe64b;
             span 暂无数据
@@ -125,8 +125,9 @@ export default {
     reset (name) {
       axios.post(`${this.config.server}/logkit/configs/${name}/reset`)
     },
-    delete (name) {
-      axios.post(`${this.config.server}/logkit/configs/${name}`)
+    deleteRunner (name) {
+      console.log(`删除${name}`)
+      axios.DELETE(`${this.config.server}/logkit/configs/${name}`)
     }
   }
 }
@@ -183,6 +184,7 @@ tbody {
     .icon {
       color: blue;
       cursor: pointer;
+      width: 100%;
       font-size: 0.8rem;
     }
   }
