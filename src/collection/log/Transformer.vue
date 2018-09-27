@@ -34,6 +34,7 @@ export default {
   name: 'transformer',
   computed: {
     ...mapState({
+      logConfig: state => state.logConfig,
       config: state => state.config
     })
   },
@@ -78,6 +79,11 @@ export default {
       let value = res.data
       console.log('获取页面数据:', value)
       if (value.code === 'L200') {
+        // 如果储存中有数据 载入存储中的数据
+        const transforms = this.logConfig.transforms
+        if (transforms !== undefined) {
+          this.transforms = transforms
+        }
         this.options = value.data
         this.loadOptionNum++
       }

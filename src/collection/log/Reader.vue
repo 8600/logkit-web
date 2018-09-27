@@ -28,6 +28,7 @@ export default {
   name: 'reader',
   computed: {
     ...mapState({
+      logConfig: state => state.logConfig,
       config: state => state.config
     })
   },
@@ -91,9 +92,21 @@ export default {
             })
           }
         }
+        // 如果储存中有数据 载入存储中的数据
+        const reader = this.logConfig.reader
+        if (reader !== undefined) {
+          const readerMode = reader.mode
+          for (let itemIndex in value.data[readerMode]) {
+            const itemData = value.data[readerMode][itemIndex]
+            // 如果储存项目中包含键值 则覆盖
+            console.log(reader, itemData.KeyName)
+            if (reader[itemData.KeyName] !== undefined) value.data[readerMode][itemIndex].Default = reader[itemData.KeyName]
+          }
+          this.reader.mode = reader.mode
+        }
         this.options = value.data
         // 默认选择
-        this.choiceOption = value.data.fileauto
+        this.choiceOption = value.data[this.reader.mode]
         this.loadOptionNum++
       }
     })

@@ -35,6 +35,7 @@ export default {
   name: 'parser',
   computed: {
     ...mapState({
+      logConfig: state => state.logConfig,
       config: state => state.config
     })
   },
@@ -77,6 +78,18 @@ export default {
       const value = res.data
       console.log('获取页面数据:', value)
       if (value.code === 'L200') {
+        // 如果储存中有数据 载入存储中的数据
+        const parser = this.logConfig.parser
+        if (parser !== undefined) {
+          const parserMode = parser.type
+          for (let itemIndex in value.data[parserMode]) {
+            const itemData = value.data[parserMode][itemIndex]
+            // 如果储存项目中包含键值 则覆盖
+            // console.log(parser, itemData.KeyName)
+            if (parser[itemData.KeyName] !== undefined) value.data[parserMode][itemIndex].Default = parser[itemData.KeyName]
+          }
+          this.parser.type = parser.type
+        }
         this.options = value.data
         // 默认选择
         this.choiceOption = value.data.raw
