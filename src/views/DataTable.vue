@@ -41,10 +41,13 @@
                 //- 读取条数
                 th {{parseInt(status[item.name].readspeed)}}
                 th {{status[item.name].readspeed_kb}}
+                //- 解析成功
                 th {{status[item.name].parserStats.success}} / {{status[item.name].parserStats.success + status[item.name].parserStats.errors}}
+                //- 发送成功
+                th {{getSendData(status[item.name])}}
                 th 
-                th 
-                th
+                th {{status[item.name].lag.size + status[item.name].lag.sizeunit}}
+                //- 错误
                 th
                   .icon &#xe699;
                 //- 详细配置
@@ -148,6 +151,16 @@ export default {
       } else {
         this.$router.push('/reader')
       }
+    },
+    getSendData (data) {
+      let success = 0, errors = 0
+      for (let key in data.senderStats) {
+        const value = data.senderStats[key]
+        success += value.success
+        errors += value.errors
+      }
+      // console.log(data)
+      return `${success}/${success + errors}`
     }
   }
 }
