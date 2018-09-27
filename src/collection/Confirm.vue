@@ -78,13 +78,23 @@ export default {
     },
     sendData () {
       const logConfig = this.logConfig
-      axios.post(`${this.config.server}/logkit/configs/${logConfig.name}`, logConfig).then((res) => {
-        const value = res.data
-        if (value.code === 'L200') {
-          alert('添加成功!')
-          this.$router.push('/')
-        }
-      })
+      if (this.disabled) {
+        axios.put(`${this.config.server}/logkit/configs/${logConfig.name}`, logConfig).then((res) => {
+          const value = res.data
+          if (value.code === 'L200') {
+            alert('修改成功!')
+            this.$router.push('/')
+          }
+        })
+      } else {
+        axios.post(`${this.config.server}/logkit/configs/${logConfig.name}`, logConfig).then((res) => {
+          const value = res.data
+          if (value.code === 'L200') {
+            alert('添加成功!')
+            this.$router.push('/')
+          }
+        })
+      }
     }
   }
 }

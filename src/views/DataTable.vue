@@ -135,7 +135,7 @@ export default {
     },
     deleteRunner (name) {
       console.log(`删除${name}`)
-      axios.DELETE(`${this.config.server}/logkit/configs/${name}`)
+      axios.delete(`${this.config.server}/logkit/configs/${name}`)
     },
     edit (item) {
       console.log(item)

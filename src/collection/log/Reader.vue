@@ -8,7 +8,7 @@
       .collector
         StepsHorizontal(:step="1")
         .input-box
-          KeyValueSelect.input-item(:value="reader.mode", @input="changeChoiceOption($event)", :option="usages", label="选择数据源类型")
+          KeyValueSelect.input-item(v-model="logConfig.reader.mode", @input="changeChoiceOption($event)", :option="usages", label="选择数据源类型")
           LineBar
           OptionBox(@change="changeConfig", :option="choiceOption")
         .bottom-bar
@@ -18,6 +18,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { Fun } from '@/Order.js'
 import LineBar from '@/components/LineBar.vue'
 import Loading from '@/components/Loading.vue'
 import Button from '@/components/Button_68_28.vue'
@@ -51,10 +52,7 @@ export default {
       usages: [],
       loadOptionNum: 0,
       // 执行下一步必须包含的key列表
-      mustKeyList: [],
-      reader: {
-        mode: "fileauto"
-      }
+      mustKeyList: []
     }
   },
   created () {
@@ -97,18 +95,28 @@ export default {
         // 如果储存中有数据 载入存储中的数据
         const reader = this.logConfig.reader
         if (reader !== undefined) {
+          console.log('从储存中加载数据!')
           const readerMode = reader.mode
           for (let itemIndex in value.data[readerMode]) {
             const itemData = value.data[readerMode][itemIndex]
             // 如果储存项目中包含键值 则覆盖
-            console.log(reader, itemData.KeyName)
+            // console.log(reader, itemData.KeyName)
             if (reader[itemData.KeyName] !== undefined) value.data[readerMode][itemIndex].Default = reader[itemData.KeyName]
           }
-          this.reader.mode = reader.mode
+        } else {
+          // 如果配置项中reader不存在 那么初始化
+          this.$store.dispatch({
+            type: 'setLogConfig',
+            data: {
+              reader: {
+                mode: "fileauto"
+              }
+            }
+          })
         }
         this.options = value.data
         // 默认选择
-        this.choiceOption = value.data[this.reader.mode]
+        this.choiceOption = value.data[this.logConfig.reader.mode]
         this.loadOptionNum++
       }
     })
@@ -117,26 +125,26 @@ export default {
     changeChoiceOption (value) {
       console.log('切换选项:', value)
       this.choiceOption = this.options[value]
-      this.reader.mode = value
     },
     changeConfig (value) {
+      let readerCopy = Fun.deepClone(this.logConfig.reader)
       console.log(`键值${value.key}改编为:${value.value}`)
-      this.reader[value.key] = value.value
+      readerCopy[value.key] = value.value
+      this.$store.dispatch({
+        type: 'setLogConfig',
+        data: {reader: readerCopy}
+      })
     },
     next () {
-      console.log(this.reader)
+      let readerCopy = Fun.deepClone(this.logConfig.reader)
       // 检查必须项是否全部填写
       for (let item in this.mustKeyList) {
         const keyName = this.mustKeyList[item]
-        if (this.reader[keyName] === undefined || this.reader[keyName] === null || this.reader[keyName] === '') {
-          alert('没有输入所有必须项!')
+        if (readerCopy[keyName] === undefined || readerCopy[keyName] === null || readerCopy[keyName] === '') {
+          alert(`没有输入所有必须项:${keyName}`)
           return
         }
       }
-      this.$store.dispatch({
-        type: 'setLogConfig',
-        data: {reader: this.reader}
-      })
       this.$router.push('parser')
     }
   },
@@ -145,17 +153,25 @@ export default {
       // console.log(newValue)
       // 清空必须字段列表
       this.mustKeyList = []
-      this.reader = {
-        mode: "fileauto"
+      let readerCopy = {
+        mode: 'fileauto'
       }
       newValue.forEach(element => {
         // 取出所有必须输入的Key
         if (element.required) {
           this.mustKeyList.push(element.KeyName)
         }
-        if (element.Default !== '' && element.Default != undefined) {
-          this.reader[element.KeyName] = element.Default
+        if (element.Default) {
+          if (this.logConfig.reader && this.logConfig.reader.mode) {
+            readerCopy.mode = this.logConfig.reader.mode
+          }
+          readerCopy.mode[element.KeyName] = element.Default
         }
+        console.log(element)
+      })
+      this.$store.dispatch({
+        type: 'setLogConfig',
+        data: {reader: readerCopy}
       })
     }
   }
