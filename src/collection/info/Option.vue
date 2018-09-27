@@ -34,6 +34,7 @@ export default {
   name: 'reader',
   computed: {
     ...mapState({
+      logConfig: state => state.logConfig,
       metric: state => state.metric,
       config: state => state.config
     })
@@ -69,6 +70,15 @@ export default {
       const value = res.data
       console.log('获取数据源类型:', value)
       if (value.code === 'L200') {
+        // 如果是修改 则从存储中取出数据
+        for (let index in this.logConfig.metric) {
+          const storeValue = this.logConfig.metric[index]
+          for (let metricDataIndex in value.data[storeValue.type]) {
+            const metricValue = value.data[storeValue.type][metricDataIndex]
+            if (storeValue.config[metricValue.KeyName]) value.data[storeValue.type][metricDataIndex].Default = 'true'
+            else value.data[storeValue.type][metricDataIndex].Default = 'false'
+          }
+        }
         this.usages = value.data
         this.loadOptionNum++
       }

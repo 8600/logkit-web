@@ -29,6 +29,7 @@ export default {
   name: 'reader',
   computed: {
     ...mapState({
+      logConfig: state => state.logConfig,
       config: state => state.config
     })
   },
@@ -57,7 +58,9 @@ export default {
     }
   },
   created () {
-    console.log(this.config)
+    // 如果储存中有数据 载入存储中的数据
+    if (this.logConfig.senders !== undefined) this.type = this.logConfig.senders[0].sender_type
+    console.log(this.logConfig.senders)
     // 获取支持的数据源类型
     axios.get(`${this.config.server}/logkit/sender/usages`).then((res) => {
       const value = res.data
@@ -71,6 +74,19 @@ export default {
       const value = res.data
       console.log('获取页面数据:', value)
       if (value.code === 'L200') {
+        // 如果储存中有数据 载入存储中的数据
+        const senders = this.logConfig.senders
+        if (senders !== undefined) {
+          for (let index in senders) {
+            const sendersType = senders[index].sender_type
+            for (let itemIndex in value.data[sendersType]) {
+              const itemData = value.data[sendersType][itemIndex]
+              // 如果储存项目中包含键值 则覆盖
+              console.log(senders[index], itemData.KeyName)
+              if (senders[index][itemData.KeyName] !== undefined) value.data[sendersType][itemIndex].Default = senders[index][itemData.KeyName]
+            }
+          }
+        }
         this.options = value.data
         // 默认选择
         this.choiceOption = value.data.pandora
@@ -106,7 +122,7 @@ export default {
   },
   watch: {
     choiceOption (newValue) {
-      console.log(newValue)
+      // console.log(newValue)
       // 清空必须字段列表
       this.mustKeyList = []
       this.sender = {
