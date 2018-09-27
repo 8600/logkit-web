@@ -1,6 +1,6 @@
 <template>
   <div class="select-input">
-    <div class="left">
+    <div class="text-bar">
       <span v-if="must" class="must">*</span>
       <span>{{label}}</span>
     </div>
@@ -39,25 +39,8 @@ export default {
 </script>
 
 <style scoped>
-  .select-input {
-    display: flex;
-    justify-content: center;
-  }
-  .left {
-    font-size: 12px;
-    width: 200px;
-    text-align: right;
-    margin: 0 20px;
-  }
-  .text {
-    color: #000;
-  }
-  .label {
-    color: rgba(0, 0, 0, 0.43);
-  }
   .right {
     width: 400px;
-    margin: 0 20px;
   }
   select {
     width: 100%;
@@ -66,5 +49,6 @@ export default {
     border-color: #ccc;
     border-radius: 3px;
     padding: 0 5px;
+    background-color: whitesmoke;
   }
 </style>

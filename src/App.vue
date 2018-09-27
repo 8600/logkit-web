@@ -45,7 +45,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less">
   /* 全局样式 */
   html, body, .app, .box {
     width: 100%;
@@ -83,12 +83,43 @@ export default {
   .clear {
     clear: both;
   }
+  .title-label {
+    color: #595959;
+    font-size: 12px;
+    font-weight: 700;
+    margin: 0 15px;
+    padding-top: 10px;
+    height: 30px;
+    line-height: 30px;
+    display: flex;
+    .icon {
+      width: 30px;
+      cursor: pointer;
+      font-size: 1.4rem;
+      text-align: center;
+      color: lightslategrey;
+    }
+    .text {
+      margin: 0 10px;
+    }
+  }
+  .input-item {
+    width: 450px;
+    font-size: 12px;
+    margin: 0 auto;
+    padding-bottom: 10px;
+    .text-bar {
+      color: #423e3d;
+      font-weight: bold;
+      line-height: 30px;
+    }
+  }
   @font-face {
     font-family: 'iconfont';  /* project id 841808 */
-    src: url('//at.alicdn.com/t/font_841808_pnx3l62ffb.eot');
-    src: url('//at.alicdn.com/t/font_841808_pnx3l62ffb.eot?#iefix') format('embedded-opentype'),
-    url('//at.alicdn.com/t/font_841808_pnx3l62ffb.woff') format('woff'),
-    url('//at.alicdn.com/t/font_841808_pnx3l62ffb.ttf') format('truetype'),
-    url('//at.alicdn.com/t/font_841808_pnx3l62ffb.svg#iconfont') format('svg');
+    src: url('//at.alicdn.com/t/font_841808_4wr9bsu24my.eot');
+    src: url('//at.alicdn.com/t/font_841808_4wr9bsu24my.eot?#iefix') format('embedded-opentype'),
+    url('//at.alicdn.com/t/font_841808_4wr9bsu24my.woff') format('woff'),
+    url('//at.alicdn.com/t/font_841808_4wr9bsu24my.ttf') format('truetype'),
+    url('//at.alicdn.com/t/font_841808_4wr9bsu24my.svg#iconfont') format('svg');
   }
 </style>

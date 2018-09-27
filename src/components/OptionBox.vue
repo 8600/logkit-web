@@ -94,9 +94,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.input-item {
-  padding: 15px 0;
-}
-</style>

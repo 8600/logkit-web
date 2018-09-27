@@ -1,6 +1,8 @@
 <template lang="pug">
   .confirm-box(v-if="usages")
-    .label 创建日志收集器
+    .title-label
+      .icon(@click="$router.push('/')") &#xe71e;
+      .text 确认并添加收集器
     .confirm
       StepsHorizontal(:step="5")
       .input-box
@@ -11,7 +13,7 @@
         CheckInput.input-item(v-model="logConfig.extra_info", label="添加额外系统信息", text="启用")
         Highlighter.high-lighter(v-model="logConfig")
       .bottom-bar
-        Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
+        Button.button-item(text="上一步", @onClick="$router.go(-1)", color="#108ee9", background="")
         Button.button-item(text="提交", @onClick="sendData")
 </template>
 
@@ -87,18 +89,6 @@ export default {
     margin: 20px;
     overflow-x: hidden;
     overflow-y: auto;
-  }
-  .input-item {
-    padding: 15px 0;
-  }
-  .label {
-    color: #595959;
-    font-size: 12px;
-    font-weight: 700;
-    margin: 0 15px;
-    padding-top: 10px;
-    height: 30px;
-    line-height: 30px;
   }
   .bottom-bar {
     display: flex;

@@ -1,8 +1,8 @@
 <template>
   <div class="check-input">
-    <div class="left">
+    <div class="text-bar">
       <span v-if="must" class="must">*</span>
-      <span>{{label}}</span>
+      <span>{{label}}:</span>
     </div>
     <div class="right">
       <CheckBox class="check-box" :value="value" @input="updateValue" :size="11" />
@@ -43,13 +43,6 @@ export default {
 <style scoped>
   .check-input {
     display: flex;
-    justify-content: center;
-  }
-  .left {
-    font-size: 12px;
-    width: 200px;
-    text-align: right;
-    margin: 0 20px;
   }
   .text {
     color: #000;
@@ -58,17 +51,16 @@ export default {
     color: rgba(0, 0, 0, 0.43);
   }
   .right {
-    width: 400px;
-    margin: 0 20px;
     line-height: 26px;
     display: flex;
     color: rgba(0,0,0,.65);
     font-size: 12px;
-  }
-  .right span {
     margin: 0 10px;
   }
+  .right span {
+    line-height: 30px;
+  }
   .check-box {
-    margin: 5px 0;
+    margin: 7px;
   }
 </style>

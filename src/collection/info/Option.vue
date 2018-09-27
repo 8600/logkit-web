@@ -2,7 +2,9 @@
   .metric-option-box
     Loading(v-if="loadOptionNum < 1")
     template(v-else)
-      .label 创建系统信息收集器
+      .title-label
+        .icon(@click="$router.push('/')") &#xe71e;
+        .text 配置metric
       .metric-option
         StepsHorizontal(:step="3")
         .input-box
@@ -14,7 +16,7 @@
                 SelectInput.input-item(v-if="item.Element == 'radio'", v-model="item.Default", :option="item.ChooseOptions", :label="item.Description")
                 TextInput.input-item(v-else, v-model="item.Default", :required="item.required", :placeholder="item.placeholder", :label="item.Description")
         .bottom-bar
-          Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
+          Button.button-item(text="上一步", @onClick="$router.go(-1)", color="#108ee9", background="")
           Button.button-item(text="下一步", @onClick="next")
 </template>
 
@@ -120,18 +122,6 @@ export default {
     margin: 20px;
     overflow-x: hidden;
     overflow-y: auto;
-  }
-  .input-item {
-    padding: 15px 0;
-  }
-  .label {
-    color: #595959;
-    font-size: 12px;
-    font-weight: 700;
-    margin: 0 15px;
-    padding-top: 10px;
-    height: 30px;
-    line-height: 30px;
   }
   .bottom-bar {
     display: flex;

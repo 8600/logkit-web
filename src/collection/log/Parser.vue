@@ -2,7 +2,9 @@
   .collector-box
     Loading(v-if="loadOptionNum < 3")
     template(v-else)
-      .label 收集器(runner)管理列表
+      .title-label
+        .icon(@click="$router.push('/')") &#xe71e;
+        .text 收集器(runner)管理列表
       .collector
         StepsHorizontal(:step="2")
         .input-box
@@ -15,7 +17,7 @@
           SoltInput.input-item(label="样例日志")
             Highlighter(v-model="samplePoints")
         .bottom-bar
-          Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
+          Button.button-item(text="上一步", @onClick="$router.go(-1)", color="#108ee9", background="")
           Button.button-item(text="下一步", @onClick="next()")
 </template>
 
@@ -180,19 +182,6 @@ export default {
     margin: 20px;
     overflow-x: hidden;
     overflow-y: auto;
-  }
-  .input-item {
-    position: relative;
-    padding: 15px 0;
-  }
-  .label {
-    color: #595959;
-    font-size: 12px;
-    font-weight: 700;
-    margin: 0 15px;
-    padding-top: 10px;
-    height: 30px;
-    line-height: 30px;
   }
   .bottom-bar {
     display: flex;

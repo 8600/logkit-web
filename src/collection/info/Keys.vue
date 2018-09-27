@@ -2,7 +2,9 @@
   .metric-box
     Loading(v-if="loadOptionNum < 1")
     template(v-else)
-      .label 创建系统信息收集器
+      .title-label
+        .icon(@click="$router.push('/')") &#xe71e;
+        .text 配置收集字段
       .metric
         StepsHorizontal(:step="2")
         .input-box
@@ -18,7 +20,7 @@
                 span {{key.value}}
               .clear
         .bottom-bar
-          Button.button-item(text="取消", @onClick="$router.go(-1)", color="#108ee9", background="")
+          Button.button-item(text="上一步", @onClick="$router.go(-1)", color="#108ee9", background="")
           Button.button-item(text="下一步", @onClick="next")
 </template>
 
@@ -75,7 +77,7 @@ export default {
       for (let item in keyList) {
         // 取出每条的key
         const key = keyList[item].key
-        // 执行全选 / 全部取消操作
+        // 执行全选 / 全部上一步操作
         metricCopy[metricIndex].attributes[key] = bool
       }
       this.$store.dispatch({
@@ -100,15 +102,6 @@ export default {
     margin: 20px;
     overflow-x: hidden;
     overflow-y: auto;
-  }
-  .label {
-    color: #595959;
-    font-size: 12px;
-    font-weight: 700;
-    margin: 0 15px;
-    padding-top: 10px;
-    height: 30px;
-    line-height: 30px;
   }
   .check-box {
     font-size: 12px;
