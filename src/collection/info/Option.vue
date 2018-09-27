@@ -8,7 +8,7 @@
       .metric-option
         StepsHorizontal(:step="3")
         .input-box
-          template(v-for="metricItem in metric")
+          template(v-for="metricItem in logConfig.metric")
             // 如果配置项列表为空则不显示
             template(v-if="usages[metricItem.type].length > 0")
               LineBar
@@ -37,7 +37,6 @@ export default {
   computed: {
     ...mapState({
       logConfig: state => state.logConfig,
-      metric: state => state.metric,
       config: state => state.config
     })
   },
@@ -88,7 +87,7 @@ export default {
   },
   methods: {
     next () {
-      let metricCopy = JSON.parse(JSON.stringify(this.metric))
+      let metricCopy = JSON.parse(JSON.stringify(this.logConfig.metric))
       for (let index in metricCopy) {
         // 找到usages中对应的数据列表
         const data = this.usages[metricCopy[index].type]
@@ -98,7 +97,7 @@ export default {
           if (element.Default !== '') metricCopy[index].config[element.KeyName] = element.Default === 'true' ? true : false
         })
       }
-      console.log(metricCopy)
+      // console.log(metricCopy)
       this.$store.dispatch({
         type: 'setLogConfig',
         data: {metric: metricCopy}

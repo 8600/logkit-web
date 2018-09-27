@@ -50,8 +50,9 @@
                 //- 详细配置
                 th
                   .icon(@click="showConfig = item") &#xe699;
+                //- 编辑
                 th
-                  .icon &#xe67b;
+                  .icon(@click="edit(item)") &#xe67b;
                 //- 操作
                 th
                   // 关闭按钮
@@ -100,6 +101,11 @@ export default {
     }
   },
   created () {
+    // 清除储存的数据
+    this.$store.dispatch({
+      type: 'clearLogConfig',
+      data: ''
+    })
     axios.get(`${this.config.server}/logkit/configs`).then((res) => {
       const value = res.data
       console.log('获取配置信息:', value)
@@ -130,6 +136,18 @@ export default {
     deleteRunner (name) {
       console.log(`删除${name}`)
       axios.DELETE(`${this.config.server}/logkit/configs/${name}`)
+    },
+    edit (item) {
+      console.log(item)
+      this.$store.dispatch({
+        type: 'setLogConfig',
+        data: item
+      })
+      if (item.metric) {
+        this.$router.push('/metric')
+      } else {
+        this.$router.push('/reader')
+      }
     }
   }
 }

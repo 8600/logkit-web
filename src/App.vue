@@ -122,4 +122,23 @@ export default {
     url('//at.alicdn.com/t/font_841808_4wr9bsu24my.ttf') format('truetype'),
     url('//at.alicdn.com/t/font_841808_4wr9bsu24my.svg#iconfont') format('svg');
   }
+  // 滚动条样式
+  /* 设置滚动条的样式 */
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  /* 滚动槽 */
+  ::-webkit-scrollbar-track {
+    box-shadow: inset006pxrgba(0,0,0,0.3);
+    border-radius: 3px;
+  }
+  /* 滚动条滑块 */
+  ::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background:skyblue;
+    box-shadow: inset006pxrgba(0,0,0,0.5);
+  }
+  ::-webkit-scrollbar-thumb:window-inactive {
+    background:skyblue;
+  }
 </style>

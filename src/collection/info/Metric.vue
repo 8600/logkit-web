@@ -33,7 +33,7 @@ export default {
   name: 'metric',
   computed: {
     ...mapState({
-      metricData: state => state.metric,
+      metricData: state => state.logConfig.metric,
       config: state => state.config
     })
   },
@@ -91,8 +91,8 @@ export default {
       }
       // 这里会覆盖保存的配置
       this.$store.dispatch({
-        type: 'setMetric',
-        data: metric
+        type: 'setLogConfig',
+        data: {metric: metric}
       })
       this.$router.push('keys')
     },

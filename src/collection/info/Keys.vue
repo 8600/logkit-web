@@ -8,7 +8,7 @@
       .metric
         StepsHorizontal(:step="2")
         .input-box
-          template(v-for="(metricItem, metricIndex) in metric")
+          template(v-for="(metricItem, metricIndex) in logConfig.metric")
             .check-all-bar
               .text {{metricItem.type}}
               CheckBox.check(v-model="checkList[metricItem.type]", @input="checkAll(metricItem.type, $event, metricIndex)", :size="11")
@@ -37,7 +37,7 @@ export default {
   name: 'keys',
   computed: {
     ...mapState({
-      metric: state => state.metric,
+      logConfig: state => state.logConfig,
       config: state => state.config
     })
   },
@@ -71,7 +71,7 @@ export default {
       this.$router.push('option')
     },
     checkAll (name, bool, metricIndex) {
-      const metricCopy = JSON.parse(JSON.stringify(this.metric))
+      const metricCopy = JSON.parse(JSON.stringify(this.logConfig.metric))
       // 当前选中项目所能选择的字段列表
       const keyList = this.keys[name]
       for (let item in keyList) {
@@ -80,9 +80,10 @@ export default {
         // 执行全选 / 全部上一步操作
         metricCopy[metricIndex].attributes[key] = bool
       }
+      console.log('执行全选操作', metricCopy)
       this.$store.dispatch({
-        type: 'setMetric',
-        data: metricCopy
+        type: 'setLogConfig',
+        data: {metric: metricCopy}
       })
     }
   }

@@ -6,7 +6,7 @@
     .confirm
       StepsHorizontal(:step="5")
       .input-box
-        TextInput.input-item(v-model="logConfig.name", :required="true", placeholder="收集器(runner)名称", label="名称")
+        TextInput.input-item(v-model="logConfig.name", :required="true", placeholder="收集器(runner)名称", :disabled="disabled", label="名称")
         TextInput.input-item(v-model="logConfig.batch_interval", :required="true", placeholder="发送间隔单位(秒)", label="最长发送间隔")
         TextInput.input-item(v-model="logConfig.collect_interval", :required="true", placeholder="系统信息收集间隔(秒)", label="系统信息收集间隔")
         TextInput.input-item(v-model="logConfig.batch_size", :required="true", placeholder="发送间隔单位(秒)", label="单次读取最大数据量")
@@ -52,7 +52,21 @@ export default {
       options: {},
       choiceOption: [],
       configData: {},
-      usages: []
+      usages: [],
+      disabled: false
+    }
+  },
+  created () {
+    // 如果没有进程名 那么进入新建收集器
+    if (this.logConfig.name !== '') {
+      this.disabled = true
+    } else {
+      this.$store.dispatch({
+        type: 'setLogConfig',
+        data: {
+          name: `runner.${Date.parse(new Date())}`
+        }
+      })
     }
   },
   methods: {
