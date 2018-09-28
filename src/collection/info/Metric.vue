@@ -61,7 +61,8 @@ export default {
       // 待优化 后端返回更方便
       if (value.code === 'L200') {
         // 如果metricData有数据 那么是修改模式
-        if (this.metricData.length > 0) {
+        // console.log(this.metricData)
+        if (this.metricData !== undefined && this.metricData.length > 0) {
           // 循环每一条内容
           for (let key in value.data) {
             // 将储存中找不到的项目的值设置为false

@@ -12,10 +12,10 @@
           LineBar
           OptionBox(@change="changeConfig", :option="choiceOption")
           SoltInput.input-item(label="输入样例日志")
-            textarea(v-model="choiceSample")
+            textarea.highlight(v-model="choiceSample")
             .analysis-button(@click="analysisData") 解析样例数据
           SoltInput.input-item(label="样例日志")
-            Highlighter(v-model="samplePoints")
+            Highlighter.highlight(v-model="samplePoints")
         .bottom-bar
           Button.button-item(text="上一步", @onClick="$router.go(-1)", color="#108ee9", background="")
           Button.button-item(text="下一步", @onClick="next()")
@@ -196,8 +196,13 @@ export default {
     color: #108ee9;
     cursor: pointer;
     background-color: #f1f7fe;
-    right: 50px;
+    right: -80px;
     border-radius: 5px;
     padding: 0 5px;
+  }
+  .highlight {
+    min-height: 200px;
+    border: 1px solid #ccc;
+    padding: 5px;
   }
 </style>

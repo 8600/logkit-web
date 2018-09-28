@@ -2,7 +2,7 @@
   <div class="select-input">
     <div class="text-bar">
       <span v-if="must" class="must">*</span>
-      <span>{{label}}</span>
+      <span>{{label}}:</span>
     </div>
     <div class="right">
       <select :value="value" @change="updateValue">

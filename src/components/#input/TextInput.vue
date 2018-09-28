@@ -2,7 +2,7 @@
   <div class="text-input" :class="{error: isError}">
     <div class="text-bar">
       <span v-if="required" class="required">*</span>
-      <span class="label">{{label}}</span>
+      <span class="label">{{label}}:</span>
     </div>
     <div class="right">
       <input :value="value" @change="updateValue" :placeholder="placeholder === '' ? '空值可作为默认值' : placeholder" :disabled="disabled" type="text"/>

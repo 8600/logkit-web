@@ -107,6 +107,7 @@ export default {
     width: 450px;
     font-size: 12px;
     margin: 0 auto;
+    position: relative;
     padding-bottom: 10px;
     .text-bar {
       color: #423e3d;
