@@ -90,7 +90,10 @@ export default {
         axios.post(`${this.config.server}/logkit/configs/${logConfig.name}`, logConfig).then((res) => {
           const value = res.data
           if (value.code === 'L200') {
-            alert('添加成功!')
+            this.$alert({
+              title: '提示',
+              text: '添加成功!'
+            })
             this.$router.push('/')
           }
         })
