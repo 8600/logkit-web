@@ -114,7 +114,7 @@ export default {
       for (let item in this.mustKeyList) {
         const keyName = this.mustKeyList[item]
         if (this.newTransformsData[keyName] === undefined || this.newTransformsData[keyName] === null || this.newTransformsData[keyName] === '') {
-          alert('没有输入所有必须项!')
+          this.$alert('错误', `没有输入所有必须项:${keyName}`)
           return
         }
       }

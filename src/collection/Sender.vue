@@ -109,7 +109,7 @@ export default {
       for (let item in this.mustKeyList) {
         const keyName = this.mustKeyList[item]
         if (this.sender[keyName] === undefined || this.sender[keyName] === null || this.sender[keyName] === '') {
-          alert('没有输入所有必须项!')
+          this.$alert('错误', `没有输入所有必须项:${keyName}`)
           return
         }
       }
