@@ -9,7 +9,8 @@
         StepsHorizontal(:step="2")
         .input-box
           KeyValueSelect.input-item(:value="parser.type", @input="changeChoiceOption($event)", :option="usages", label="选择数据源类型")
-          LineBar
+          // 如果可配置的项目为0 那么不显示分割线
+          LineBar(v-if="choiceOption.length > 0")
           OptionBox(@change="changeConfig", :option="choiceOption")
           SoltInput.input-item(label="输入样例日志")
             textarea.highlight(v-model="choiceSample")

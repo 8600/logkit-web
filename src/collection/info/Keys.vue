@@ -13,7 +13,8 @@
               .text {{metricItem.type}}
               CheckBox.check(v-model="checkList[metricItem.type]", @input="checkAll(metricItem.type, $event, metricIndex)", :size="11")
               span 全选/全不选
-            LineBar
+            // 如果可配置的项目为0 那么不显示分割线
+            LineBar(v-if="choiceOption.length > 0")
             .check-box
               .check-item(v-for="key in keys[metricItem.type]")
                 CheckBox.check(v-model="metricItem.attributes[key.key]", :size="11")

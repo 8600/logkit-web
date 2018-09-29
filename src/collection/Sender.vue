@@ -9,7 +9,8 @@
         StepsHorizontal(:step="4")
         .input-box
           KeyValueSelect.input-item(v-model="type", @input="changeChoiceOption($event)", :option="usages", label="需要转化字段的类型")
-          LineBar
+          // 如果可配置的项目为0 那么不显示分割线
+          LineBar(v-if="choiceOption.length > 0")
           OptionBox(@change="changeConfig", :option="choiceOption")
         .bottom-bar
           Button.button-item(text="上一步", @onClick="$router.go(-1)", color="#108ee9", background="")
@@ -46,7 +47,8 @@ export default {
   },
   data () {
     return {
-      type: 'pandora',
+      // 默认选中
+      type: 'discard',
       map: [],
       autoDelete: false,
       options: {},
@@ -91,7 +93,7 @@ export default {
         }
         this.options = value.data
         // 默认选择
-        this.choiceOption = value.data.pandora
+        this.choiceOption = value.data.discard
         this.loadOptionNum++
       }
     })

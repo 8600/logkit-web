@@ -11,7 +11,8 @@
           template(v-for="metricItem in logConfig.metric")
             // 如果配置项列表为空则不显示
             template(v-if="usages[metricItem.type].length > 0")
-              LineBar
+              // 如果可配置的项目为0 那么不显示分割线
+              LineBar(v-if="choiceOption.length > 0")
               template(v-for="item in usages[metricItem.type]")
                 SelectInput.input-item(v-if="item.Element == 'radio'", v-model="item.Default", :option="item.ChooseOptions", :label="item.Description")
                 TextInput.input-item(v-else, v-model="item.Default", :required="item.required", :placeholder="item.placeholder", :label="item.Description")
