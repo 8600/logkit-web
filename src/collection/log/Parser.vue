@@ -125,7 +125,7 @@ export default {
       for (let item in this.mustKeyList) {
         const keyName = this.mustKeyList[item]
         if (this.parser[keyName] === undefined || this.parser[keyName] === null || this.parser[keyName] === '') {
-          this.$alert('错误', '没有输入所有必须项:${keyName}')
+          this.$alert({title: '错误', text: `没有输入所有必须项:${keyName}`})
           return
         }
       }
@@ -205,5 +205,6 @@ export default {
     min-height: 200px;
     border: 1px solid #ccc;
     padding: 5px;
+    width: 100%;
   }
 </style>

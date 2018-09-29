@@ -8,10 +8,7 @@
       .metric
         StepsHorizontal(:step="1")
         .input-box
-          .check-card(v-for="(item, key) in usages", @click="cardClick(key)", :class="{active: item.Default === 'true'}")
-            .icon(v-if="item.Default === 'true'") &#xe609;
-            .icon(v-else) &#xe600;
-            .text {{item.Description}}
+          CardInput(v-for="(item, key) in usages", :text="item.Description", v-model="usages[key].Default")
           .clear
         .bottom-bar
           Button.button-item(text="上一步", @onClick="$router.go(-1)", color="#108ee9", background="")
@@ -23,6 +20,7 @@ import { mapState } from 'vuex'
 import LineBar from '@/components/LineBar.vue'
 import Loading from '@/components/Loading.vue'
 import Button from '@/components/Button_68_28.vue'
+import CardInput from '@/components/#input/CardInput.vue'
 import SelectInput from '@/components/#input/SelectInput.vue'
 import StepsHorizontal from '@/components/StepsHorizontal-info.vue'
 import OptionBox from '@/components/OptionBox.vue'
@@ -42,6 +40,7 @@ export default {
     LineBar,
     Loading,
     OptionBox,
+    CardInput,
     SelectInput,
     KeyValueSelect,
     StepsHorizontal
@@ -82,7 +81,7 @@ export default {
       // 待优化 可以合并
       for(let item in this.usages) {
         const value = this.usages[item]
-        if (value.Default === 'true') {
+        if (value.Default) {
           metric.push({
             type: value.KeyName,
             attributes: {},
@@ -90,17 +89,17 @@ export default {
           })
         }
       }
+      // 如果没有选择需要采集的数据 不向下执行
+      if (metric.length === 0) {
+        this.$alert({title: '错误', text: '没有选择需要采集的数据!'})
+        return
+      }
       // 这里会覆盖保存的配置
       this.$store.dispatch({
         type: 'setLogConfig',
         data: {metric: metric}
       })
       this.$router.push('keys')
-    },
-    cardClick (key) {
-      // 这后端我也是醉了 返回的是个字符串不是一个布尔 还需要特殊处理
-      if ( this.usages[key].Default === 'false')  this.usages[key].Default = 'true'
-      else this.usages[key].Default = 'false'
     }
   }
 }
@@ -127,31 +126,5 @@ export default {
       margin: 0 10px;
     }
   }
-  .check-card {
-    cursor: pointer;
-    position: relative;
-    background-color: #756d6d;
-    display: flex;
-    height: 60px;
-    width: 280px;
-    float: left;
-    margin: 10px;
-    color: white;
-    line-height: 60px;
-    box-shadow: 2px 2px 10px 0px rgba(0, 0, 0, 0.35);
-    .icon {
-      width: 60px;
-      text-align: center;
-      font-size: 1.6rem;
-    }
-    .text {
-      margin: 0 10px;
-    }
-  }
-  .active {
-    background-color: cornflowerblue;
-  }
-  .check-card:hover {
-    transform: scale(1.05);
-  }
+  
 </style>

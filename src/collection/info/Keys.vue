@@ -13,12 +13,9 @@
               .text {{metricItem.type}}
               CheckBox.check(v-model="checkList[metricItem.type]", @input="checkAll(metricItem.type, $event, metricIndex)", :size="11")
               span 全选/全不选
-            // 如果可配置的项目为0 那么不显示分割线
-            LineBar(v-if="checkList.length > 0")
+            LineBar
             .check-box
-              .check-item(v-for="key in keys[metricItem.type]")
-                CheckBox.check(v-model="metricItem.attributes[key.key]", :size="11")
-                span {{key.value}}
+              CardInput(v-for="key in keys[metricItem.type]", v-model="metricItem.attributes[key.key]", :text="key.value")
               .clear
         .bottom-bar
           Button.button-item(text="上一步", @onClick="$router.go(-1)", color="#108ee9", background="")
@@ -31,6 +28,7 @@ import CheckBox from 'check-puge'
 import LineBar from '@/components/LineBar.vue'
 import Loading from '@/components/Loading.vue'
 import Button from '@/components/Button_68_28.vue'
+import CardInput from '@/components/#input/CardInput.vue'
 import StepsHorizontal from '@/components/StepsHorizontal-info.vue'
 
 const axios = require('axios')
@@ -46,6 +44,7 @@ export default {
     Button,
     LineBar,
     Loading,
+    CardInput,
     CheckBox,
     StepsHorizontal
   },
@@ -57,6 +56,9 @@ export default {
     }
   },
   created () {
+    // 如果采集类型没有选择 跳转到类型选择页面
+    console.log(this.logConfig)
+    if (this.logConfig.metric === undefined || this.logConfig.metric.lenght === 0) this.$router.push('/metric')
     // 获取支持的数据源类型
     axios.get(`${this.config.server}/logkit/metric/keys`).then((res) => {
       const value = res.data
@@ -69,7 +71,20 @@ export default {
   },
   methods: {
     next () {
-      this.$router.push('option')
+      // 是否选中了至少一个采集字段
+      for (let metricKey in this.logConfig.metric) {
+        // 取出采集内容列表
+        const metricItem = this.logConfig.metric[metricKey]
+        for (let attributesKey in metricItem.attributes) {
+          // 遍历所有采集字段 如果有一个字段被选中 那么就进入下一步
+          if (metricItem.attributes[attributesKey]) {
+            this.$router.push('option')
+            return
+          }
+        }
+      }
+      console.log(this.logConfig)
+      this.$alert({title: '错误', text: '没有选择需要采集的数据!'})
     },
     checkAll (name, bool, metricIndex) {
       const metricCopy = JSON.parse(JSON.stringify(this.logConfig.metric))

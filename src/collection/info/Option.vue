@@ -12,7 +12,7 @@
             // 如果配置项列表为空则不显示
             template(v-if="usages[metricItem.type].length > 0")
               // 如果可配置的项目为0 那么不显示分割线
-              LineBar(v-if="choiceOption.length > 0")
+              LineBar
               template(v-for="item in usages[metricItem.type]")
                 SelectInput.input-item(v-if="item.Element == 'radio'", v-model="item.Default", :option="item.ChooseOptions", :label="item.Description")
                 TextInput.input-item(v-else, v-model="item.Default", :required="item.required", :placeholder="item.placeholder", :label="item.Description")
@@ -72,13 +72,19 @@ export default {
       const value = res.data
       console.log('获取数据源类型:', value)
       if (value.code === 'L200') {
-        // 如果是修改 则从存储中取出数据
+        // 从存储中取出保存数据
         for (let index in this.logConfig.metric) {
+          // 取出每个采集类型
           const storeValue = this.logConfig.metric[index]
+          // 如果当前类型没有存储配置 进入下一次循环
+          if (Object.keys(storeValue.config).length === 0) continue
+          // 遍历每一条可以填写的配置项 如果储存中有它所对应的数据 就将它取出来
           for (let metricDataIndex in value.data[storeValue.type]) {
+            // 配置项
             const metricValue = value.data[storeValue.type][metricDataIndex]
-            if (storeValue.config[metricValue.KeyName]) value.data[storeValue.type][metricDataIndex].Default = 'true'
-            else value.data[storeValue.type][metricDataIndex].Default = 'false'
+            if (storeValue.config[metricValue.KeyName] !== undefined) {
+              value.data[storeValue.type][metricDataIndex].Default = storeValue.config[metricValue.KeyName]
+            }
           }
         }
         this.usages = value.data
@@ -95,7 +101,7 @@ export default {
         // metricCopy[index].config[]
         data.forEach(element => {
           // 待优化 后端返回的有问题 
-          if (element.Default !== '') metricCopy[index].config[element.KeyName] = element.Default === 'true' ? true : false
+          if (element.Default !== '') metricCopy[index].config[element.KeyName] = element.Default
         })
       }
       // console.log(metricCopy)

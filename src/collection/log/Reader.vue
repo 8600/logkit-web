@@ -142,7 +142,7 @@ export default {
       for (let item in this.mustKeyList) {
         const keyName = this.mustKeyList[item]
         if (readerCopy[keyName] === undefined || readerCopy[keyName] === null || readerCopy[keyName] === '') {
-          this.$alert('错误', `没有输入所有必须项:${keyName}`)
+          this.$alert({title: '错误', text: `没有输入所有必须项:${keyName}`})
           return
         }
       }

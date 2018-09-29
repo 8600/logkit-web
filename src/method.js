@@ -1,7 +1,12 @@
 export default {
   install (Vue, options) {
     // get方法
-    Vue.prototype.$alert = (title = "提示", text = "") => {
+    Vue.prototype.$alert = (option) => {
+      if (typeof option !== 'object') {
+        console.error(`调用错误, 传入参数应该是一个对象而不是:${typeof option}`, option)
+      }
+      const title = option.title || '提示'
+      const text = option.text || ''
       let alertElement = document.createElement('div')
       alertElement.innerHTML = `
         <div id="alert" class="alert-box" style="position: fixed; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.50); z-index: 999; left: 0; top: 0;">
