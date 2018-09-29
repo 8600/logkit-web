@@ -163,12 +163,14 @@ export default {
           this.mustKeyList.push(element.KeyName)
         }
         if (element.Default) {
+          // 判断store中是否有数据
           if (this.logConfig.reader && this.logConfig.reader.mode) {
+            console.log(`从reader中读取到mode:${this.logConfig.reader.mode}`)
             readerCopy.mode = this.logConfig.reader.mode
           }
-          readerCopy.mode[element.KeyName] = element.Default
+          readerCopy[element.KeyName] = element.Default
         }
-        console.log(element)
+        // console.log(element)
       })
       this.$store.dispatch({
         type: 'setLogConfig',
