@@ -1,5 +1,5 @@
 # logkit
-
+https://github.com/qiniu/logkit
 ## Project setup
 ```
 yarn install
