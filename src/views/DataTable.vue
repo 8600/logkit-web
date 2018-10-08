@@ -7,10 +7,10 @@
         .title-bar
           router-link.title-bar-button(tag="div", to="reader")
             .icon &#xe659;
-            span.text 增加日志采集收集器
+            span.text 增加日志采集器
           router-link.title-bar-button(tag="div", to="metric")
             .icon &#xe659;
-            span.text 增加系统信息采集收集器
+            span.text 增加系统采集器
         .table-box
           table(v-if="tableData", border="0", cellspacing="0", cellpadding="0")
             thead
@@ -19,11 +19,11 @@
                 th 修改时间
                 th 运行状态
                 th 读取总条数
-                th 读取条数(条/秒)
-                th 发送速率(条/s)
-                th 解析成功/总 (条数)
-                th 发送成功/总 (条数)
-                th 路径
+                th 读取条数
+                th 读取速率
+                th 发送速率
+                th 解析 成功/总数
+                th 发送 成功/总数
                 th 待读取数据
                 th 错误日志
                 th 详细配置
@@ -32,41 +32,51 @@
                 th 重置
                 th 删除
             tbody
-              tr(v-for="(item, key) in tableData", :key="key")
-                th {{item.name}}
+              tr(v-for="(item, key) in status", :key="key")
+                th {{key}}
                 //- 创建时间
-                th {{new Date(item.createtime).toLocaleString()}}
-                th {{status[item.name].runningStatus === 'running' ? '运行中' : '已停止'}}
-                th {{status[item.name].readDataCount}}
+                th {{new Date(tableData[key].createtime).toLocaleString()}}
+                th {{item.runningStatus === 'running' ? '运行中' : '已停止'}}
+                th {{item.readDataCount}} 条
                 //- 读取条数
-                th {{parseInt(status[item.name].readspeed)}}
-                th {{status[item.name].readspeed_kb}}
+                th
+                  span {{parseInt(item.readspeed)}} 条/s
+                  span.icon.icon-trend(v-if="item.readspeedtrend === 'stable'") &#xe6d4;
+                  span.icon.icon-trend(v-else-if="item.readspeedtrend === 'up'") &#xe8ec;
+                  span.icon.icon-trend(v-else) &#xe917;
+                th
+                  span {{item.readspeed_kb}} KB/s
+                  span.icon.icon-trend(v-if="item.readspeedtrend === 'stable'") &#xe6d4;
+                  span.icon.icon-trend(v-else-if="item.readspeedtrend === 'up'") &#xe8ec;
+                  span.icon.icon-trend(v-else) &#xe917;
+                //- 读取速率
+                th
+                  span {{getSendRate(item)}} 条/s
                 //- 解析成功
-                th {{status[item.name].parserStats.success}} / {{status[item.name].parserStats.success + status[item.name].parserStats.errors}}
+                th {{item.parserStats.success}} / {{item.parserStats.success + item.parserStats.errors}} 条
                 //- 发送成功
-                th {{getSendData(status[item.name])}}
-                th 
-                th {{status[item.name].lag.size + status[item.name].lag.sizeunit}}
+                th {{getSendData(item)}}
+                th {{item.lag.size + item.lag.sizeunit}} 条
                 //- 错误
                 th
-                  .icon &#xe699;
+                  .icon.icon-button &#xe699;
                 //- 详细配置
                 th
-                  .icon(@click="showConfig = item") &#xe699;
+                  .icon.icon-button(@click="showConfig = item") &#xe699;
                 //- 编辑
                 th
-                  .icon(@click="edit(item)") &#xe67b;
+                  .icon.icon-button(@click="edit(item)") &#xe67b;
                 //- 操作
                 th
                   // 关闭按钮
-                  .icon(v-if="status[item.name].runningStatus === 'running'", @click="stop(item.name)") &#xe7fc;
-                  .icon(v-else, @click="start(item.name)") &#xe686;
+                  .icon.icon-button(v-if="item.runningStatus === 'running'", @click="stop(item.name)") &#xe7fc;
+                  .icon.icon-button(v-else, @click="start(item.name)") &#xe686;
                 th
                   // 重置
-                  .icon(@click="reset(item.name)") &#xe629;
+                  .icon.icon-button(@click="reset(item.name)") &#xe629;
                 th
                   // 删除
-                  .icon(@click="deleteRunner(item.name)") &#xe61c;
+                  .icon.icon-button(@click="deleteRunner(item.name)") &#xe61c;
           .empty(v-else)
             .icon &#xe64b;
             span 暂无数据
@@ -85,7 +95,7 @@ import Highlighter from '@puge/highlight'
 import Loading from '@/components/Loading.vue'
 const axios = require('axios')
 export default {
-  name: 'table',
+  name: 'data-table',
   computed: {
     ...mapState({
       config: state => state.config
@@ -100,7 +110,9 @@ export default {
       loadOptionNum: 0,
       tableData: [],
       status: {},
-      showConfig: null
+      showConfig: null,
+      // 定时器
+      clock: null
     }
   },
   created () {
@@ -125,6 +137,12 @@ export default {
         this.loadOptionNum++
       }
     })
+    this.clock = setInterval(() => {
+      this.getStatusData()
+    }, 2000)
+  },
+  beforeDestroy () {
+    window.clearTimeout(this.clock)
   },
   methods: {
     stop (name) {
@@ -152,6 +170,15 @@ export default {
         this.$router.push('/reader')
       }
     },
+    getStatusData () {
+      axios.get(`${this.config.server}/logkit/status`).then((res) => {
+        const value = res.data
+        // console.log('获取状态信息:', value)
+        if (value.code === 'L200') {
+          this.status = value.data
+        }
+      })
+    },
     getSendData (data) {
       let success = 0, errors = 0
       for (let key in data.senderStats) {
@@ -160,7 +187,15 @@ export default {
         errors += value.errors
       }
       // console.log(data)
-      return `${success}/${success + errors}`
+      return `${success} / ${success + errors} 条`
+    },
+    getSendRate (data) {
+      let count = 0
+      for (let key in data.senderStats) {
+        const value = data.senderStats[key]
+        count += value.speed
+      }
+      return `${parseInt(count)}`
     }
   }
 }
@@ -214,7 +249,7 @@ table {
 tbody {
   th {
     border-bottom: 1px solid #e9e9e9;
-    .icon {
+    .icon-button {
       color: blue;
       cursor: pointer;
       width: 100%;
@@ -225,6 +260,10 @@ tbody {
     height: 40px;
     line-height: 40px;
     color: rgba(0,0,0,.65);
+  }
+  .icon-trend {
+    color: skyblue;
+    font-size: 14px;
   }
 }
 .runner-box {

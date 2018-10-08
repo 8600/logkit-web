@@ -117,11 +117,11 @@ export default {
   }
   @font-face {
     font-family: 'iconfont';  /* project id 841808 */
-    src: url('//at.alicdn.com/t/font_841808_4wr9bsu24my.eot');
-    src: url('//at.alicdn.com/t/font_841808_4wr9bsu24my.eot?#iefix') format('embedded-opentype'),
-    url('//at.alicdn.com/t/font_841808_4wr9bsu24my.woff') format('woff'),
-    url('//at.alicdn.com/t/font_841808_4wr9bsu24my.ttf') format('truetype'),
-    url('//at.alicdn.com/t/font_841808_4wr9bsu24my.svg#iconfont') format('svg');
+    src: url('//at.alicdn.com/t/font_841808_m2n9uk9ro9.eot');
+    src: url('//at.alicdn.com/t/font_841808_m2n9uk9ro9.eot?#iefix') format('embedded-opentype'),
+    url('//at.alicdn.com/t/font_841808_m2n9uk9ro9.woff') format('woff'),
+    url('//at.alicdn.com/t/font_841808_m2n9uk9ro9.ttf') format('truetype'),
+    url('//at.alicdn.com/t/font_841808_m2n9uk9ro9.svg#iconfont') format('svg');
   }
   // 滚动条样式
   /* 设置滚动条的样式 */
