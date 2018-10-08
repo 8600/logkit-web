@@ -25,21 +25,18 @@ export default {
   },
   created () {
     axios.get('config.json').then((res) => {
-      const config = res.data
-      this.$store.dispatch({
-        type: 'setConfig',
-        data: config
-      })
+      let config = res.data
       console.log('获取到配置信息:', res)
-      axios.get(`${config.server}/logkit/version`).then((res) => {
-        const version = res.data
-        console.log('获取到版本信息:', version)
-      })
-      axios.get(`${config.server}/logkit/version`).then((res) => {
+      axios.get(`${config.server}/logkit/cluster/ismaster`).then((res) => {
         const cluster = res.data
         console.log('获取到集群信息:', cluster)
+        config.cluster = cluster.data
+        this.$store.dispatch({
+          type: 'setConfig',
+          data: config
+        })
+        this.loading = false
       })
-      this.loading = false
     })
   }
 }

@@ -5,12 +5,15 @@
       .label 收集器(runner)管理列表
       .runner-box
         .title-bar
-          router-link.title-bar-button(tag="div", to="reader")
-            .icon &#xe659;
-            span.text 增加日志采集器
-          router-link.title-bar-button(tag="div", to="metric")
-            .icon &#xe659;
-            span.text 增加系统采集器
+          //- 集群模式
+          template(v-if="config.cluster")
+          template(v-else)
+            router-link.title-bar-button(tag="div", to="reader")
+              .icon &#xe659;
+              span.text 增加日志采集器
+            router-link.title-bar-button(tag="div", to="metric")
+              .icon &#xe659;
+              span.text 增加系统采集器
         .table-box
           table(v-if="tableData", border="0", cellspacing="0", cellpadding="0")
             thead
@@ -31,52 +34,13 @@
                 th 操作
                 th 重置
                 th 删除
-            tbody
-              tr(v-for="(item, key) in status", :key="key")
-                th {{key}}
-                //- 创建时间
-                th {{new Date(tableData[key].createtime).toLocaleString()}}
-                th {{item.runningStatus === 'running' ? '运行中' : '已停止'}}
-                th {{item.readDataCount}} 条
-                //- 读取条数
-                th
-                  span {{parseInt(item.readspeed)}} 条/s
-                  span.icon.icon-trend(v-if="item.readspeedtrend === 'stable'") &#xe6d4;
-                  span.icon.icon-trend(v-else-if="item.readspeedtrend === 'up'") &#xe8ec;
-                  span.icon.icon-trend(v-else) &#xe917;
-                th
-                  span {{item.readspeed_kb}} KB/s
-                  span.icon.icon-trend(v-if="item.readspeedtrend === 'stable'") &#xe6d4;
-                  span.icon.icon-trend(v-else-if="item.readspeedtrend === 'up'") &#xe8ec;
-                  span.icon.icon-trend(v-else) &#xe917;
-                //- 读取速率
-                th
-                  span {{getSendRate(item)}} 条/s
-                //- 解析成功
-                th {{item.parserStats.success}} / {{item.parserStats.success + item.parserStats.errors}} 条
-                //- 发送成功
-                th {{getSendData(item)}}
-                th {{item.lag.size + item.lag.sizeunit}} 条
-                //- 错误
-                th
-                  .icon.icon-button &#xe699;
-                //- 详细配置
-                th
-                  .icon.icon-button(@click="showConfig = item") &#xe699;
-                //- 编辑
-                th
-                  .icon.icon-button(@click="edit(item)") &#xe67b;
-                //- 操作
-                th
-                  // 关闭按钮
-                  .icon.icon-button(v-if="item.runningStatus === 'running'", @click="stop(item.name)") &#xe7fc;
-                  .icon.icon-button(v-else, @click="start(item.name)") &#xe686;
-                th
-                  // 重置
-                  .icon.icon-button(@click="reset(item.name)") &#xe629;
-                th
-                  // 删除
-                  .icon.icon-button(@click="deleteRunner(item.name)") &#xe61c;
+            //- 集群模式
+            tbody(v-if="config.cluster")
+              template(v-for="(clusterItem, clusterKey) in status")
+                ClusterTbody(:status="clusterItem.status", :tableData="tableData[clusterKey].configs")
+            //- 普通模式
+            tbody(v-else)
+              ClusterTbody(:status="status", :tableData="tableData")
           .empty(v-else)
             .icon &#xe64b;
             span 暂无数据
@@ -92,6 +56,7 @@
 <script>
 import { mapState } from 'vuex'
 import Highlighter from '@puge/highlight'
+import ClusterTbody from '@/components/ClusterTbody.vue'
 import Loading from '@/components/Loading.vue'
 const axios = require('axios')
 export default {
@@ -103,7 +68,8 @@ export default {
   },
   components: {
     Loading,
-    Highlighter
+    Highlighter,
+    ClusterTbody
   },
   data () {
     return {
@@ -112,7 +78,10 @@ export default {
       status: {},
       showConfig: null,
       // 定时器
-      clock: null
+      clock: null,
+      // 集群
+      tag: '',
+      url: ''
     }
   },
   created () {
@@ -121,7 +90,14 @@ export default {
       type: 'clearLogConfig',
       data: ''
     })
-    axios.get(`${this.config.server}/logkit/configs`).then((res) => {
+    let configsUrl = `${this.config.server}/logkit/configs`,
+         statusUrl = `${this.config.server}/logkit/status`
+    // 判断是否为集群模式
+    if (this.config.cluster) {
+      configsUrl = `${this.config.server}/logkit/cluster/configs?tag=${this.tag}&url=${this.url}`
+      statusUrl = `${this.config.server}/logkit/cluster/status?tag=${this.tag}&url=${this.url}`
+    }
+    axios.get(configsUrl).then((res) => {
       const value = res.data
       console.log('获取配置信息:', value)
       if (value.code === 'L200') {
@@ -129,7 +105,7 @@ export default {
         this.loadOptionNum++
       }
     })
-    axios.get(`${this.config.server}/logkit/status`).then((res) => {
+    axios.get(statusUrl).then((res) => {
       const value = res.data
       console.log('获取状态信息:', value)
       if (value.code === 'L200') {
@@ -171,31 +147,18 @@ export default {
       }
     },
     getStatusData () {
-      axios.get(`${this.config.server}/logkit/status`).then((res) => {
+      let statusUrl = `${this.config.server}/logkit/status`
+      // 判断是否为集群模式
+      if (this.config.cluster) {
+        statusUrl = `${this.config.server}/logkit/cluster/status?tag=${this.tag}&url=${this.url}`
+      }
+      axios.get(statusUrl).then((res) => {
         const value = res.data
         // console.log('获取状态信息:', value)
         if (value.code === 'L200') {
           this.status = value.data
         }
       })
-    },
-    getSendData (data) {
-      let success = 0, errors = 0
-      for (let key in data.senderStats) {
-        const value = data.senderStats[key]
-        success += value.success
-        errors += value.errors
-      }
-      // console.log(data)
-      return `${success} / ${success + errors} 条`
-    },
-    getSendRate (data) {
-      let count = 0
-      for (let key in data.senderStats) {
-        const value = data.senderStats[key]
-        count += value.speed
-      }
-      return `${parseInt(count)}`
     }
   }
 }

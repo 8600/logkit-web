@@ -6,7 +6,9 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     config: {
-      server: ''
+      server: '',
+      // 集群模式
+      cluster: false
     },
     logConfig: {
       name: '',
