@@ -23,6 +23,10 @@ export default new Router({
       children: [
         {
           path: '/',
+          redirect: '/collect'
+        },
+        {
+          path: '/collect',
           component: Runner,
           children: [
             {
@@ -71,9 +75,13 @@ export default new Router({
               component: Option,
             }
           ]
+        },
+        {
+          path: '/cluster',
+          component: Runner
         }
       ]
-    },
+    }
     // {
     //   path: '/about',
     //   name: 'about',

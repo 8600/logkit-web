@@ -3,7 +3,8 @@
     .left-box
       .logo
         img(src="../assets/logo.png")
-      router-link.menu-item(tag="div", to="/") 收集器(runner)管理
+      router-link.menu-item(tag="div", to="/") 采集管理
+      router-link.menu-item(tag="div", to="/cluster") 集群管理
     router-view.right-box
     //- Loading
 </template>
@@ -36,7 +37,7 @@ export default {
     line-height: 40px;
     text-align: center;
   }
-  .menu-item {
+  .router-link-active {
     background-color: cornflowerblue;
   }
 }
