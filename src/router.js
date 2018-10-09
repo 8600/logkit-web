@@ -2,9 +2,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Runner from './views/Runner.vue'
-import DataTable from './views/DataTable.vue'
+import Collection from './views/Collection.vue'
 import Reader from './collection/log/Reader.vue'
 import Parser from './collection/log/Parser.vue'
+import Cluster from './cluster/Index.vue'
 import Sender from './collection/Sender.vue'
 import Confirm from './collection/Confirm.vue'
 import Transformer from './collection/log/Transformer.vue'
@@ -22,17 +23,13 @@ export default new Router({
       component: Home,
       children: [
         {
-          path: '/',
-          redirect: '/collect'
-        },
-        {
           path: '/collect',
           component: Runner,
           children: [
             {
               path: '/',
-              name: 'dataTable',
-              component: DataTable,
+              name: 'collection',
+              component: Collection,
             },
             {
               path: '/reader',
@@ -78,6 +75,17 @@ export default new Router({
         },
         {
           path: '/cluster',
+          component: Runner,
+          children: [
+            {
+              path: '/',
+              name: 'cluster',
+              component: Cluster,
+            }
+          ]
+        },
+        {
+          path: '/machine',
           component: Runner
         }
       ]
