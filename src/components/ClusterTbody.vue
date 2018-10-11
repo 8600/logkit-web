@@ -30,7 +30,7 @@
         .icon.icon-button &#xe699;
       //- 详细配置
       th
-        .icon.icon-button(@click="showConfig = item") &#xe699;
+        .icon.icon-button(@click="$emit('showConfig', item)") &#xe699;
       //- 编辑
       th
         .icon.icon-button(@click="edit(item)") &#xe67b;
@@ -48,8 +48,16 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+const axios = require('axios')
 export default {
+  computed: {
+    ...mapState({
+      config: state => state.config
+    })
+  },
   props: {
+    isCluster: Boolean,
     status: Object,
     tableData: Object
   },
@@ -71,6 +79,34 @@ export default {
         count += value.speed
       }
       return `${parseInt(count)}`
+    },
+    deleteRunner (name) {
+      if (this.isCluster) axios.delete(`${this.config.server}/cluster/configs/${name}`)
+      else axios.delete(`${this.config.server}/logkit/configs/${name}`)
+    },
+    stop (name) {
+      if (this.isCluster) axios.post(`${this.config.server}/cluster/configs/${name}/stop`)
+      else axios.post(`${this.config.server}/logkit/configs/${name}/stop`)
+    },
+    start (name) {
+      if (this.isCluster) axios.post(`${this.config.server}/cluster/configs/${name}/start`)
+      else axios.post(`${this.config.server}/logkit/configs/${name}/start`)
+    },
+    reset (name) {
+      if (this.isCluster) axios.post(`${this.config.server}/cluster/configs/${name}/reset`)
+      else axios.post(`${this.config.server}/logkit/configs/${name}/reset`)
+    },
+    edit (item) {
+      console.log(item)
+      this.$store.dispatch({
+        type: 'setLogConfig',
+        data: item
+      })
+      if (item.metric) {
+        this.$router.push('/metric')
+      } else {
+        this.$router.push('/reader')
+      }
     }
   }
 }

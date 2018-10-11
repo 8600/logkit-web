@@ -1,6 +1,6 @@
 <template lang="pug">
   .data-table
-    Loading(v-if="loadOptionNum < 2")
+    Loading(v-if="loadOptionNum < 1")
     template(v-else)
       .label 收集器(runner)管理列表
       .runner-box
@@ -37,10 +37,10 @@
             //- 集群模式
             tbody(v-if="config.cluster")
               template(v-for="(clusterItem, clusterKey) in status")
-                ClusterTbody(:status="clusterItem.status", :tableData="tableData[clusterKey].configs")
+                ClusterTbody(:status="clusterItem.status", :isCluster="true", :tableData="tableData[clusterKey].configs", @showConfig="(data) => showConfig = data")
             //- 普通模式
             tbody(v-else)
-              ClusterTbody(:status="status", :tableData="tableData")
+              ClusterTbody(:status="status", :isCluster="false", :tableData="tableData", @showConfig="(data) => showConfig = data")
           .empty(v-else)
             .icon &#xe64b;
             span 暂无数据
@@ -90,12 +90,10 @@ export default {
       type: 'clearLogConfig',
       data: ''
     })
-    let configsUrl = `${this.config.server}/logkit/configs`,
-         statusUrl = `${this.config.server}/logkit/status`
+    let configsUrl = `${this.config.server}/logkit/configs`
     // 判断是否为集群模式
     if (this.config.cluster) {
       configsUrl = `${this.config.server}/logkit/cluster/configs?tag=${this.tag}&url=${this.url}`
-      statusUrl = `${this.config.server}/logkit/cluster/status?tag=${this.tag}&url=${this.url}`
     }
     axios.get(configsUrl).then((res) => {
       const value = res.data
@@ -105,47 +103,9 @@ export default {
         this.loadOptionNum++
       }
     })
-    axios.get(statusUrl).then((res) => {
-      const value = res.data
-      console.log('获取状态信息:', value)
-      if (value.code === 'L200') {
-        this.status = value.data
-        this.loadOptionNum++
-      }
-    })
-    this.clock = setInterval(() => {
-      this.getStatusData()
-    }, 2000)
-  },
-  beforeDestroy () {
-    window.clearTimeout(this.clock)
+    this.getStatusData()
   },
   methods: {
-    stop (name) {
-      axios.post(`${this.config.server}/logkit/configs/${name}/stop`)
-    },
-    start (name) {
-      axios.post(`${this.config.server}/logkit/configs/${name}/start`)
-    },
-    reset (name) {
-      axios.post(`${this.config.server}/logkit/configs/${name}/reset`)
-    },
-    deleteRunner (name) {
-      console.log(`删除${name}`)
-      axios.delete(`${this.config.server}/logkit/configs/${name}`)
-    },
-    edit (item) {
-      console.log(item)
-      this.$store.dispatch({
-        type: 'setLogConfig',
-        data: item
-      })
-      if (item.metric) {
-        this.$router.push('/metric')
-      } else {
-        this.$router.push('/reader')
-      }
-    },
     getStatusData () {
       let statusUrl = `${this.config.server}/logkit/status`
       // 判断是否为集群模式
@@ -158,6 +118,10 @@ export default {
         if (value.code === 'L200') {
           this.status = value.data
         }
+        this.clock = setTimeout(() => {
+          // console.log(this)
+          this.getStatusData()
+        }, 2000)
       })
     }
   }
