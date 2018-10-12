@@ -81,19 +81,19 @@ export default {
       return `${parseInt(count)}`
     },
     deleteRunner (name) {
-      if (this.isCluster) axios.delete(`${this.config.server}/cluster/configs/${name}`)
+      if (this.isCluster) axios.delete(`${this.config.server}/logkit/cluster/configs/${name}`)
       else axios.delete(`${this.config.server}/logkit/configs/${name}`)
     },
     stop (name) {
-      if (this.isCluster) axios.post(`${this.config.server}/cluster/configs/${name}/stop`)
+      if (this.isCluster) axios.post(`${this.config.server}/logkit/cluster/configs/${name}/stop`)
       else axios.post(`${this.config.server}/logkit/configs/${name}/stop`)
     },
     start (name) {
-      if (this.isCluster) axios.post(`${this.config.server}/cluster/configs/${name}/start`)
+      if (this.isCluster) axios.post(`${this.config.server}/logkit/cluster/configs/${name}/start`)
       else axios.post(`${this.config.server}/logkit/configs/${name}/start`)
     },
     reset (name) {
-      if (this.isCluster) axios.post(`${this.config.server}/cluster/configs/${name}/reset`)
+      if (this.isCluster) axios.post(`${this.config.server}/logkit/cluster/configs/${name}/reset`)
       else axios.post(`${this.config.server}/logkit/configs/${name}/reset`)
     },
     edit (item) {
