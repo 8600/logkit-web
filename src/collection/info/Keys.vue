@@ -15,7 +15,7 @@
               span 全选/全不选
             LineBar
             .check-box
-              CardInput(v-for="key in keys[metricItem.type]", v-model="metricItem.attributes[key.key]", :text="key.value")
+              CardInput(v-for="(key, index) in keys[metricItem.type]", v-model="metricItem.attributes[key.key]", :text="key.value", :keys="index")
               .clear
         .bottom-bar
           Button.button-item(text="上一步", @onClick="$router.go(-1)", color="#108ee9", background="")

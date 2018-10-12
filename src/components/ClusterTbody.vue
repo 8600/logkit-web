@@ -30,10 +30,10 @@
         .icon.icon-button &#xe699;
       //- 详细配置
       th
-        .icon.icon-button(@click="$emit('showConfig', item)") &#xe699;
+        .icon.icon-button(@click="$emit('showConfig', tableData[key])") &#xe699;
       //- 编辑
       th
-        .icon.icon-button(@click="edit(item)") &#xe67b;
+        .icon.icon-button(@click="edit(tableData[key])") &#xe67b;
       //- 操作
       th
         // 关闭按钮

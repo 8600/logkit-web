@@ -79,7 +79,10 @@ export default {
     sendData () {
       const logConfig = this.logConfig
       if (this.disabled) {
-        axios.put(`${this.config.server}/logkit/configs/${logConfig.name}`, logConfig).then((res) => {
+        let requestUrl = `${this.config.server}/logkit/configs/${logConfig.name}`
+        // 判断是否为集群
+        if (this.config.cluster) requestUrl = `${this.config.server}/logkit/cluster/configs/${logConfig.name}`
+        axios.put(requestUrl, logConfig).then((res) => {
           const value = res.data
           if (value.code === 'L200') {
             alert('修改成功!')
@@ -87,7 +90,10 @@ export default {
           }
         })
       } else {
-        axios.post(`${this.config.server}/logkit/configs/${logConfig.name}`, logConfig).then((res) => {
+        let requestUrl = `${this.config.server}/logkit/configs/${logConfig.name}`
+        // 判断是否为集群
+        if (this.config.cluster) requestUrl = `${this.config.server}/logkit/cluster/configs/${logConfig.name}`
+        axios.post(requestUrl, logConfig).then((res) => {
           const value = res.data
           if (value.code === 'L200') {
             this.$alert({

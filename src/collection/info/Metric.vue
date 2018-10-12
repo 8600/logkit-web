@@ -8,7 +8,7 @@
       .metric
         StepsHorizontal(:step="1")
         .input-box
-          CardInput(v-for="(item, key) in usages", :text="item.Description", v-model="usages[key].Default")
+          CardInput(v-for="(item, key) in usages", :text="item.Description", v-model="usages[key].Default", :keys="key")
           .clear
         .bottom-bar
           Button.button-item(text="上一步", @onClick="$router.go(-1)", color="#108ee9", background="")
@@ -66,7 +66,7 @@ export default {
           for (let key in value.data) {
             // 将储存中找不到的项目的值设置为false
             if (!this.metricData.find((element) => (element.type == value.data[key].KeyName))) {
-              value.data[key].Default = 'false'
+              value.data[key].Default = false
             }
           }
         }
