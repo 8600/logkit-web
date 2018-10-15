@@ -2,45 +2,38 @@
   .data-table
     Loading(v-if="loadOptionNum < 2")
     template(v-else)
-      .label 收集器(runner)管理列表
+      .label 集群(cluster)管理列表
       .runner-box
-        .title-bar
-          //- 集群模式
-          template(v-if="config.cluster")
-          template(v-else)
-            router-link.title-bar-button(tag="div", to="reader")
-              .icon &#xe659;
-              span.text 增加日志采集器
-            router-link.title-bar-button(tag="div", to="metric")
-              .icon &#xe659;
-              span.text 增加系统采集器
         .table-box
           table(v-if="tableData", border="0", cellspacing="0", cellpadding="0")
             thead
               tr
-                th 名称
-                th 修改时间
+                th 集群名称
+                th 机器地址
                 th 运行状态
-                th 读取总条数
-                th 读取条数
-                th 读取速率
-                th 发送速率
-                th 解析 成功/总数
-                th 发送 成功/总数
-                th 待读取数据
-                th 错误日志
-                th 详细配置
+                th 更改集群名称
+                th 添加日志收集器
+                th 添加系统收集器
                 th 编辑
-                th 操作
+                th 停止
+                th 重启
                 th 重置
                 th 删除
             //- 集群模式
             tbody(v-if="config.cluster")
               template(v-for="(clusterItem, clusterKey) in status")
-                ClusterTbody(:status="clusterItem.status", :tableData="tableData[clusterKey].configs")
-            //- 普通模式
-            tbody(v-else)
-              ClusterTbody(:status="status", :tableData="tableData")
+                template(v-for="(item, key) in clusterItem.status")
+                  th {{key}}
+                  th {{item.url}}
+                  th {{item.runningStatus}}
+                  th geig
+                  th geig
+                  th geig
+                  th geig
+                  th geig
+                  th geig
+                  th geig
+                  th geig
           .empty(v-else)
             .icon &#xe64b;
             span 暂无数据

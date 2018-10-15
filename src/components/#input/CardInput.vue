@@ -1,8 +1,8 @@
 <template lang="pug">
-.check-card(@click="cardClick", :class="{active: value}")
-  .icon(v-if="value") &#xe609;
-  .icon(v-else) &#xe600;
-  .text {{text}}
+  .check-card(@click="cardClick", :class="{active: value}")
+    .icon(v-if="value") &#xe609;
+    .icon(v-else) &#xe600;
+    .text {{text}}
 </template>
 
 <script>

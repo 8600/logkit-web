@@ -15,27 +15,27 @@
               .icon &#xe659;
               span.text 增加系统采集器
         .table-box
-          table(v-if="tableData", border="0", cellspacing="0", cellpadding="0")
-            thead
-              tr
-                th 名称
-                th 修改时间
-                th 运行状态
-                th 读取总条数
-                th 读取条数
-                th 读取速率
-                th 发送速率
-                th 解析 成功/总数
-                th 发送 成功/总数
-                th 待读取数据
-                th 错误日志
-                th 详细配置
-                th 编辑
-                th 操作
-                th 重置
-                th 删除
+          .cluster-box(v-if="tableData", border="0", cellspacing="0", cellpadding="0")
+            //- thead
+            //-   tr
+            //-     th 名称
+            //-     th 修改时间
+            //-     th 运行状态
+            //-     th 读取总条数
+            //-     th 读取条数
+            //-     th 读取速率
+            //-     th 发送速率
+            //-     th 解析 成功/总数
+            //-     th 发送 成功/总数
+            //-     th 待读取数据
+            //-     th 错误日志
+            //-     th 详细配置
+            //-     th 编辑
+            //-     th 操作
+            //-     th 重置
+            //-     th 删除
             //- 集群模式
-            tbody(v-if="config.cluster")
+            .cluster(v-if="config.cluster")
               template(v-for="(clusterItem, clusterKey) in status")
                 ClusterTbody(:status="clusterItem.status", :isCluster="true", :tableData="tableData[clusterKey].configs", @showConfig="(data) => showConfig = data")
             //- 普通模式
@@ -218,6 +218,9 @@ tbody {
     width: 28px;
     text-align: center;
   }
+}
+.cluster-box {
+  border: 1px solid #ccc;
 }
 .show-config-box {
   position: fixed;

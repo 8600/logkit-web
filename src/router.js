@@ -83,10 +83,6 @@ export default new Router({
               component: Cluster,
             }
           ]
-        },
-        {
-          path: '/machine',
-          component: Runner
         }
       ]
     }

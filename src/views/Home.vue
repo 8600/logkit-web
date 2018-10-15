@@ -5,7 +5,6 @@
         img(src="../assets/logo.png")
       router-link.menu-item(tag="div", to="/collect") 采集管理
       router-link.menu-item(tag="div", to="/cluster") 集群管理
-      router-link.menu-item(tag="div", to="/machine") 机器管理
     router-view.right-box
     //- Loading
 </template>

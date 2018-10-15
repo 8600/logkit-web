@@ -15,7 +15,7 @@
               span 全选/全不选
             LineBar
             .check-box
-              CardInput(v-for="(key, index) in keys[metricItem.type]", v-model="metricItem.attributes[key.key]", :text="key.value", :keys="index")
+              CardInput(v-for="(key, index) in keysList[metricItem.type]", v-model="metricItem.attributes[key.key]", :text="key.value", :key="key.key")
               .clear
         .bottom-bar
           Button.button-item(text="上一步", @onClick="$router.go(-1)", color="#108ee9", background="")
@@ -50,7 +50,7 @@ export default {
   },
   data () {
     return {
-      keys: [],
+      keysList: [],
       checkList: [],
       loadOptionNum: 0
     }
@@ -64,7 +64,7 @@ export default {
       const value = res.data
       console.log('获取数据源类型:', value)
       if (value.code === 'L200') {
-        this.keys = value.data
+        this.keysList = value.data
         this.loadOptionNum++
       }
     })
@@ -88,8 +88,10 @@ export default {
     },
     checkAll (name, bool, metricIndex) {
       const metricCopy = JSON.parse(JSON.stringify(this.logConfig.metric))
+      console.log(metricCopy)
       // 当前选中项目所能选择的字段列表
-      const keyList = this.keys[name]
+      const keyList = this.keysList[name]
+      console.log(keyList)
       for (let item in keyList) {
         // 取出每条的key
         const key = keyList[item].key
