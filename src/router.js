@@ -32,7 +32,7 @@ export default new Router({
               component: Collection,
             },
             {
-              path: '/reader',
+              path: '/reader/:id',
               name: 'reader',
               component: Reader,
             },

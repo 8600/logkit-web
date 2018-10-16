@@ -5,41 +5,26 @@
       .label 收集器(runner)管理列表
       .runner-box
         .title-bar
-          //- 集群模式
-          template(v-if="config.cluster")
-          template(v-else)
-            router-link.title-bar-button(tag="div", to="reader")
-              .icon &#xe659;
-              span.text 增加日志采集器
-            router-link.title-bar-button(tag="div", to="metric")
-              .icon &#xe659;
-              span.text 增加系统采集器
         .table-box
           .cluster-box(v-if="tableData", border="0", cellspacing="0", cellpadding="0")
-            //- thead
-            //-   tr
-            //-     th 名称
-            //-     th 修改时间
-            //-     th 运行状态
-            //-     th 读取总条数
-            //-     th 读取条数
-            //-     th 读取速率
-            //-     th 发送速率
-            //-     th 解析 成功/总数
-            //-     th 发送 成功/总数
-            //-     th 待读取数据
-            //-     th 错误日志
-            //-     th 详细配置
-            //-     th 编辑
-            //-     th 操作
-            //-     th 重置
-            //-     th 删除
             //- 集群模式
             .cluster(v-if="config.cluster")
+              router-link.title-bar-button(tag="div", to="reader/jh")
+                .icon &#xe659;
+                span.text 增加日志采集器
+              router-link.title-bar-button(tag="div", to="metric")
+                .icon &#xe659;
+                span.text 增加系统采集器
               template(v-for="(clusterItem, clusterKey) in status")
                 ClusterTbody(:status="clusterItem.status", :isCluster="true", :tableData="tableData[clusterKey].configs", @showConfig="(data) => showConfig = data")
             //- 普通模式
-            tbody(v-else)
+            .cluster(v-else)
+              router-link.title-bar-button(tag="div", to="reader")
+                .icon &#xe659;
+                span.text 增加日志采集器
+              router-link.title-bar-button(tag="div", to="metric")
+                .icon &#xe659;
+                span.text 增加系统采集器
               ClusterTbody(:status="status", :isCluster="false", :tableData="tableData", @showConfig="(data) => showConfig = data")
           .empty(v-else)
             .icon &#xe64b;

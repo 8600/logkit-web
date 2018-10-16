@@ -3,6 +3,10 @@
     .cluster(v-for="(item, key) in status")
       .left
         .info.icon &#xe619;
+          .blinker
+            // 关闭按钮
+            .icon.icon-button.stop(v-if="item.runningStatus === 'running'", @click="stop(item.name)") &#xe7fc;
+            .icon.icon-button.start(v-else, @click="start(item.name)") &#xe686;
       .right
         .name {{key}}
         .time {{new Date(tableData[key].createtime).toLocaleString()}}
@@ -20,26 +24,29 @@
         .send-box.item-bar
           .send-speed.item 发送速率: {{getSendRate(item)}} 条/s
           .wait-send.item 等待发送: {{item.lag.size + item.lag.sizeunit}} 条
-        //- 错误
-        th
-          .icon.icon-button &#xe699;
-        //- 详细配置
-        th
-          .icon.icon-button(@click="$emit('showConfig', tableData[key])") &#xe699;
-        //- 编辑
-        th
-          .icon.icon-button(@click="edit(tableData[key])") &#xe67b;
-        //- 操作
-        th
-          // 关闭按钮
-          .icon.icon-button(v-if="item.runningStatus === 'running'", @click="stop(item.name)") &#xe7fc;
-          .icon.icon-button(v-else, @click="start(item.name)") &#xe686;
-        th
-          // 重置
-          .icon.icon-button(@click="reset(item.name)") &#xe629;
-        th
-          // 删除
-          .icon.icon-button(@click="deleteRunner(item.name)") &#xe61c;
+        .card-button-box
+          //- 错误
+          .card-button
+            .icon.icon-button &#xe699;
+            .card-button-text 查看错误
+          //- 详细配置
+          .card-button(@click="$emit('showConfig', tableData[key])")
+            .icon.icon-button &#xe699;
+            .card-button-text 详细配置
+          //- 编辑
+          .card-button(@click="edit(tableData[key])")
+            .icon.icon-button &#xe67b;
+            .card-button-text 编辑
+          //- 操作
+          .card-button(@click="reset(item.name)")
+            // 重置
+            .icon.icon-button &#xe629;
+            .card-button-text 重置
+          .card-button(@click="deleteRunner(item.name)")
+            // 删除
+            .icon.icon-button &#xe61c;
+            .card-button-text 删除
+          .clear
 </template>
 
 <script>
@@ -120,6 +127,9 @@ export default {
     color: #ccc;
     font-size: 60px;
     margin: 10px;
+    position: relative;
+    width: 66px;
+    text-align: center;
   }
   .cluster {
     display: flex;
@@ -130,5 +140,59 @@ export default {
   }
   .item-bar {
     display: flex;
+  }
+  .blinker {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: none;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  .info:hover .blinker {
+    display: block;
+  }
+  .blinker .icon-button {
+    font-size: 28px;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    line-height: 66px;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  .stop {
+    color: gold;
+  }
+  .card-button-box {
+    margin: 5px 0;
+  }
+  .card-button {
+    display: flex;
+    height: 25px;
+    line-height: 25px;
+    width: 90px;
+    float: left;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+    background-color: cornsilk;
+    border-radius: 3px;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .card-button .icon-button {
+    width: 25px;
+    line-height: 25px;
+    text-align: center;
+    background-color: lightgray;
+  }
+  .item-bar .item {
+    width: 200px;
+  }
+  .card-button-text {
+    width: calc(100% - 25px);
+    text-align: center;
   }
 </style>
