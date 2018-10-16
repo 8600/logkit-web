@@ -129,6 +129,7 @@ export default {
           return
         }
       }
+      console.log(this.parser)
       this.$store.dispatch({
         type: 'setLogConfig',
         data: {parser: this.parser}

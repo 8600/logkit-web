@@ -146,7 +146,7 @@ export default {
           return
         }
       }
-      this.$router.push('parser')
+      this.$router.push('/parser')
     }
   },
   watch: {

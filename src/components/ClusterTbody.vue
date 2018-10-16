@@ -133,6 +133,7 @@ export default {
   }
   .cluster {
     display: flex;
+    border-bottom: 1px solid #ccc;
   }
   .name {
     font-size: 18px;

@@ -9,13 +9,17 @@
           .cluster-box(v-if="tableData", border="0", cellspacing="0", cellpadding="0")
             //- 集群模式
             .cluster(v-if="config.cluster")
-              router-link.title-bar-button(tag="div", to="reader/jh")
-                .icon &#xe659;
-                span.text 增加日志采集器
-              router-link.title-bar-button(tag="div", to="metric")
-                .icon &#xe659;
-                span.text 增加系统采集器
               template(v-for="(clusterItem, clusterKey) in status")
+                .cluster-title-bar
+                  .tag 集群名称: {{clusterItem.tag}}
+                  .url 网络地址: {{clusterKey}}
+                  .add-button-box
+                    router-link.title-bar-button(tag="div", to="reader")
+                      .icon &#xe659;
+                      span.text 增加日志采集器
+                    router-link.title-bar-button(tag="div", to="metric")
+                      .icon &#xe659;
+                      span.text 增加系统采集器
                 ClusterTbody(:status="clusterItem.status", :isCluster="true", :tableData="tableData[clusterKey].configs", @showConfig="(data) => showConfig = data")
             //- 普通模式
             .cluster(v-else)
@@ -105,7 +109,9 @@ export default {
         }
         this.clock = setTimeout(() => {
           // console.log(this)
-          this.getStatusData()
+          if (this.$route.name === 'collection') {
+            this.getStatusData()
+          }
         }, 2000)
       })
     }
@@ -188,6 +194,21 @@ tbody {
 .title-bar {
   padding-bottom: 15px;
 }
+.cluster-title-bar {
+  display: flex;
+  line-height: 40px;
+  color: white;
+  font-size: 15px;
+  padding: 0 10px;
+  background-color: cornflowerblue;
+}
+.cluster-title-bar .url {
+  margin: 0 10px;
+}
+.add-button-box {
+  position: absolute;
+  right: 0;
+}
 .title-bar-button {
   display: flex;
   line-height: 28px;
@@ -199,13 +220,15 @@ tbody {
   border: 1px solid #108ee9;
   border-radius: 5px;
   display: inline-block;
+  background-color: white;
   .icon {
     width: 28px;
     text-align: center;
   }
 }
 .cluster-box {
-  border: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
 }
 .show-config-box {
   position: fixed;
