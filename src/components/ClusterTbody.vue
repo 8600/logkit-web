@@ -2,7 +2,7 @@
   .cluster-bar
     .cluster(v-for="(item, key) in status")
       .left
-        .info.icon &#xe619;
+        .info.icon(:class="{active: item.runningStatus === 'running'}") &#xe619;
           .blinker
             // 关闭按钮
             .icon.icon-button.stop(v-if="item.runningStatus === 'running'", @click="stop(item.name)") &#xe7fc;
@@ -24,29 +24,32 @@
         .send-box.item-bar
           .send-speed.item 发送速率: {{getSendRate(item)}} 条/s
           .wait-send.item 等待发送: {{item.lag.size + item.lag.sizeunit}} 条
-        .card-button-box
-          //- 错误
-          .card-button
-            .icon.icon-button &#xe699;
-            .card-button-text 查看错误
-          //- 详细配置
-          .card-button(@click="$emit('showConfig', tableData[key])")
-            .icon.icon-button &#xe699;
-            .card-button-text 详细配置
-          //- 编辑
-          .card-button(@click="edit(tableData[key])")
-            .icon.icon-button &#xe67b;
-            .card-button-text 编辑
-          //- 操作
-          .card-button(@click="reset(item.name)")
-            // 重置
-            .icon.icon-button &#xe629;
-            .card-button-text 重置
-          .card-button(@click="deleteRunner(item.name)")
-            // 删除
-            .icon.icon-button &#xe61c;
-            .card-button-text 删除
-          .clear
+        .parser-box.item-bar
+          .send-success.item 发送成功: {{getSendData(item)}}
+          .parser-success.item 解析成功: {{item.parserStats.success}} / {{item.parserStats.success + item.parserStats.errors}} 条
+      .card-button-box
+        //- 错误
+        .card-button
+          .icon.icon-button &#xe699;
+          .card-button-text 查看错误
+        //- 详细配置
+        .card-button(@click="$emit('showConfig', tableData[key])")
+          .icon.icon-button &#xe699;
+          .card-button-text 详细配置
+        //- 编辑
+        .card-button(@click="edit(tableData[key])")
+          .icon.icon-button &#xe67b;
+          .card-button-text 编辑
+        //- 操作
+        .card-button(@click="reset(item.name)")
+          // 重置
+          .icon.icon-button &#xe629;
+          .card-button-text 重置
+        .card-button(@click="deleteRunner(item.name)")
+          // 删除
+          .icon.icon-button &#xe61c;
+          .card-button-text 删除
+        .clear
 </template>
 
 <script>
@@ -133,6 +136,7 @@ export default {
   }
   .cluster {
     display: flex;
+    position: relative;
     border-bottom: 1px solid #ccc;
   }
   .name {
@@ -169,6 +173,9 @@ export default {
   }
   .card-button-box {
     margin: 5px 0;
+    position: absolute;
+    right: 0;
+    top: 0;
   }
   .card-button {
     display: flex;
@@ -195,5 +202,8 @@ export default {
   .card-button-text {
     width: calc(100% - 25px);
     text-align: center;
+  }
+  .active {
+    color: orange;
   }
 </style>

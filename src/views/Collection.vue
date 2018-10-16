@@ -14,21 +14,22 @@
                   .tag 集群名称: {{clusterItem.tag}}
                   .url 网络地址: {{clusterKey}}
                   .add-button-box
-                    router-link.title-bar-button(tag="div", to="reader")
+                    router-link.title-bar-button.log(tag="div", to="reader")
                       .icon &#xe659;
                       span.text 增加日志采集器
-                    router-link.title-bar-button(tag="div", to="metric")
+                    router-link.title-bar-button.sys(tag="div", to="metric")
                       .icon &#xe659;
                       span.text 增加系统采集器
                 ClusterTbody(:status="clusterItem.status", :isCluster="true", :tableData="tableData[clusterKey].configs", @showConfig="(data) => showConfig = data")
             //- 普通模式
             .cluster(v-else)
-              router-link.title-bar-button(tag="div", to="reader")
-                .icon &#xe659;
-                span.text 增加日志采集器
-              router-link.title-bar-button(tag="div", to="metric")
-                .icon &#xe659;
-                span.text 增加系统采集器
+              .cluster-title-bar
+                router-link.title-bar-button.log(tag="div", to="reader")
+                  .icon &#xe659;
+                  span.text 增加日志采集器
+                router-link.title-bar-button.sys(tag="div", to="metric")
+                  .icon &#xe659;
+                  span.text 增加系统采集器
               ClusterTbody(:status="status", :isCluster="false", :tableData="tableData", @showConfig="(data) => showConfig = data")
           .empty(v-else)
             .icon &#xe64b;
@@ -199,10 +200,9 @@ tbody {
   line-height: 40px;
   color: white;
   font-size: 15px;
-  padding: 0 10px;
   background-color: cornflowerblue;
 }
-.cluster-title-bar .url {
+.cluster-title-bar .tag {
   margin: 0 10px;
 }
 .add-button-box {
@@ -212,19 +212,21 @@ tbody {
 .title-bar-button {
   display: flex;
   line-height: 28px;
-  color: #108ee9;
   width: 170px;
   cursor: pointer;
   font-size: 12px;
-  margin-right: 10px;
-  border: 1px solid #108ee9;
-  border-radius: 5px;
   display: inline-block;
-  background-color: white;
+  background-color: gainsboro;
   .icon {
     width: 28px;
     text-align: center;
   }
+}
+.log {
+  background-color: gray;
+}
+.sys {
+  background-color: lightsalmon;
 }
 .cluster-box {
   border-left: 1px solid #ccc;
